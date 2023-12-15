@@ -1,0 +1,32 @@
+.chat-container{
+    width:95%;
+    margin: 0 auto;
+    padding: 1rem;
+    box-sizing: border-box;
+    border: 1px gray solid;
+    border-radius: 10px;
+}
+
+.input{
+    font: inherit;
+    border: 1px gray solid;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+}
+
+.label{
+    margin: 0.5rem 0;
+}
+
+@media screen and (min-width:700px) and (max-width:900px) {
+    .chat-container{
+        width: 80%;
+    }
+}
+
+@media screen and (min-width:901px) {
+    .chat-container{
+        width: 50%;
+    }
+}

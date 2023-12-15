@@ -1,0 +1,156 @@
+.header {
+    display: flex;
+    width: 100%;
+    padding: 0 0.5rem;
+    height: 5rem;
+    align-content: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background-color: white;
+}
+
+.logo{
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+    font-size: 25px;
+}
+
+.hamburger {
+    border: none;
+    background-color: inherit;
+    margin-left:1rem;
+}
+
+.hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: #27221f;
+}
+
+
+.drop-down {
+    display: flex;
+    height: fit-content;
+    flex-direction: column;
+    width: 40%;
+    position: absolute;
+    top: 3rem;
+    left: calc(100% - 40%);
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+    justify-content: center;
+    border-radius: 5px;
+    box-shadow: 0px 8px 16px 0px black;
+    font-size: 16px;
+    padding: 0.3rem;
+}
+
+.drop-down a,
+.drop-down button {
+    text-decoration: none;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    color: black;
+    background-color: inherit;
+}
+
+.drop-down a {
+    border-bottom: 1px #cfcacc solid;
+}
+
+.drop-down a:hover,
+.drop-down button:hover {
+    background-color: #cfcacc;
+}
+
+
+.sidebar {   
+    height: 95%;
+    padding:0.5rem;
+    left: 8%;
+    width: 90%;
+    background-color: white;
+    position: fixed;
+    overflow: auto;
+    top: 2.5%;
+    list-style-type: none;
+    z-index: 4;  
+    animation-name: examples;
+    animation-duration: 3s;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* Sidebar links */
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    background-color: #139D69;
+    padding: 2.5rem 0.2rem;
+    color: white;
+    box-sizing: border-box;
+    margin: 0.3rem 0;
+    border-radius: 5px;
+}
+
+.sidebar a:hover{
+    background-color: whitesmoke;
+    color: #139D69;
+}
+
+.star{
+    color: #139D69;
+}
+
+@media screen and (min-width:750px) and (max-width:1000px) {
+    .drop-down {
+        width: 20%;
+        left: calc(100% - 20%);
+    }
+
+    .sidebar{
+        left:48%;
+        width:50%;
+    }
+}
+
+@media screen and (min-width:1000px) {
+    .drop-down {
+        width: 15%;
+        left: calc(100% - 16%)
+    }
+
+    .sidebar {
+        left: 68%;
+        width: 30%;
+    }
+}
+
+
+/*TRANSITION PROPERTIES **/
+@keyframes examples {
+    from {
+        opacity: 0;
+    }
+
+    to {
+       opacity: 1;
+    }
+}

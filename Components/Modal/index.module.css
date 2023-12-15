@@ -1,0 +1,47 @@
+.modal {
+    height: fit-content;
+    padding: 1rem;
+    left: 2.5%;
+    width: 95%;
+    background-color: white;
+    position: fixed;
+    overflow: auto;
+    top: 2.5%;
+    z-index: 4;
+    animation-name: examples;
+    animation-duration: 3s;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.btn{
+    background-color: rgb(223, 39, 39);
+    color: white;
+    border:1px gray solid;
+    border-radius: 3px;
+   
+}
+
+@keyframes examples {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media screen and (min-width:700px) and (max-width:900px) {
+   .modal{
+    left:15%;
+    width: 70%;
+   } 
+}
+
+@media screen and (min-width:900px) {
+    .modal {
+        left: 25%;
+        width: 50%;
+    }
+}

@@ -1,0 +1,36 @@
+.support, .devpost, .newsletter{
+    margin-top: 1rem;
+    box-sizing: border-box;
+}
+
+.newsletter input{
+    display: block;
+    width: 90%;
+    margin-bottom: 0.5rem;
+    height: 2rem;
+}
+
+.social{
+    width:100%;
+    text-align: center;
+    box-sizing: border-box;
+    margin-top: 2rem;
+}
+
+.social img{
+    margin: 0.2rem;
+}
+
+@media screen and (min-width:750px) {
+    .support{
+        width:25%
+    }
+
+    .devpost{
+        width: 25%;
+    }
+
+    .newsletter{
+        width: 50%;
+    }
+}

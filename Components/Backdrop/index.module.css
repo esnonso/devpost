@@ -1,0 +1,23 @@
+.backdrop {
+    background-color: black;
+    z-index: 3;
+    height: 100%;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0.1;
+    color: white;
+    animation-name: backdrop;
+    animation-duration: 1s;
+}
+
+@keyframes backdrop {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 0.1;
+    }
+}

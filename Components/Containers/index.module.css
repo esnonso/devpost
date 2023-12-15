@@ -1,0 +1,27 @@
+.container-column{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.container-flex {
+    display: flex;
+    flex-direction: row;
+}
+
+.container{
+    box-sizing: border-box;
+}
+
+@media screen and (min-width: 700px) {
+    .container-column{
+        flex-direction: row;
+    }
+
+    .container-flex{
+        flex-direction: column;
+    }
+}
+
+
+

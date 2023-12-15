@@ -1,0 +1,102 @@
+.banner {
+    width: 100%;
+    height: -webkit-calc(100vh - 5rem);
+    background-image: url("../Images/banner-mobile.jpg");
+    background-color: rgb(32, 29, 29);
+    background-size: 130%;
+    background-position: 60% 60%;
+    background-repeat: no-repeat;
+    background-blend-mode: multiply;
+    margin: 0;
+    padding: 0;
+    animation-name: fadeIn;
+    animation-duration: 5s;
+    display: flex;
+    align-items: center;
+}
+
+.call-a-doc{
+    width: 100%;
+    padding: 0.5rem;
+    box-sizing: border-box;
+}
+
+.call-a-doc-img, .subscribe-img-rev, .appointment-img{
+    width: 100%;
+    height: 15rem;
+    background-color: rgb(32, 29, 29);;
+    background-size: 160%;
+    background-position: 60% 60%;
+    background-repeat: no-repeat;
+    background-blend-mode: multiply;
+    box-sizing: border-box;
+    padding: 0 0.5rem;
+}
+
+.call-a-doc-img{
+    background-image: url("../Images/sick.jpg");
+}
+
+.subscribe-img-rev{
+    background-image: url("../Images//heart.jpg");
+}
+
+.appointment-img{
+    background-image: url("../Images/lab.jpg");
+}
+.star{
+    color: #139D69;
+}
+
+.text{
+    display: flex;
+    width:100%;
+    flex-direction:"column";
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+@media screen and (min-width:900px){
+   .banner{
+    background-size: 100%;
+    background-image: url("../Images/banner.jpg");
+   } 
+
+    .call-a-doc {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        padding: 0.5rem 4rem;
+    }
+
+    .subscribe-health{
+        display: flex;
+        flex-direction: row-reverse;
+        padding: 0.5rem 4rem;
+    }
+
+    .call-a-doc-img, .subscribe-img-rev, .appointment-img {
+        width: 50%;
+        height: 15rem;
+        background-size:100%;
+        background-position: 60% 60%;
+        background-repeat: no-repeat;
+        background-blend-mode: multiply;
+    }
+
+    .text{
+        width: 50%;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 10;
+    }
+}
