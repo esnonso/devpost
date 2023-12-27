@@ -1,0 +1,30 @@
+.error-modal{
+    margin: 0;
+    padding: 0.5rem;
+    background-color: white;
+    height: 15%;
+    position: fixed;
+    left: 2.5%;
+    width: 95%;
+    top: 2%;
+    z-index: 4;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.close-btn-err{
+    color: white;
+    background-color:#721C24 ;
+    border: 1px red solid;
+    border-radius: 5px;
+}
+
+@media screen and (min-width:800px) {
+    .error-modal{
+        width:60%;
+        left:20%;
+    }
+}

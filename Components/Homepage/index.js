@@ -1,9 +1,12 @@
+import { useRouter } from "next/router";
 import Container from "../Containers/container";
 import { H1Tags, PTags } from "../Text";
 import Button from "../Button";
 import classes from "./home.module.css";
 
 export default function Homepage() {
+  const router = useRouter();
+
   return (
     <Container width="100%" flex="column">
       <div className={classes.banner}>
@@ -16,15 +19,15 @@ export default function Homepage() {
           </PTags>
 
           <Button
-            text="Subscribe to health package"
-            width="60%"
+            text="Chat with a doctor"
+            width="fit-content"
             font="18px"
             padding={"0.2rem 0.5rem"}
-            borderRadius={"5px"}
             height={"3rem"}
             margin={"0.9rem 0.3rem"}
             back="#139D69"
             color="white"
+            click={() => router.push("/chat/new")}
           />
         </Container>
       </div>
@@ -62,8 +65,7 @@ export default function Homepage() {
               padding={"0 2rem"}
               color="white"
               border={"none"}
-              borderRadius={"5px"}
-              font="20px"
+              click={() => router.push("/chat/new")}
             />
           </Container>
         </div>
@@ -117,9 +119,8 @@ export default function Homepage() {
               height={"2.5rem"}
               padding={"0 2rem"}
               border={"none"}
-              borderRadius={"5px"}
               color="white"
-              font="20px"
+              click={() => router.push("/subscription/new")}
             />
           </Container>
         </div>
@@ -147,7 +148,7 @@ export default function Homepage() {
         textAlign="center"
         fontWeight="600"
       >
-        Do Medical tests/ Book appointment
+        Book appointment
       </PTags>
 
       <div className={classes["call-a-doc"]}>
@@ -172,22 +173,19 @@ export default function Homepage() {
               padding={"0 2rem"}
               color="white"
               border={"none"}
-              borderRadius={"5px"}
-              font="20px"
+              click={() => router.push("/appointments/new")}
             />
           </Container>
         </div>
         <div className={classes.text}>
           <PTags textAlign="left" margin="2rem 0">
-            <span className={classes["star"]}>★</span>We do wide range of tests.
-            <br />
-            <span className={classes["star"]}>★</span>Schedule an appointment
+            <span className={classes["star"]}>★</span> Schedule an appointment
             for a test or to see a doctor.
             <br />
             <span className={classes["star"]}>★</span> We get everything ready
             in advance for you.
             <br />
-            <span className={classes["star"]}>★</span>Skip the queue and get
+            <span className={classes["star"]}>★</span> Skip the queue and get
             your appointment done as quick as possible.
           </PTags>
         </div>

@@ -85,7 +85,7 @@
     list-style-type: none;
     z-index: 4;  
     animation-name: examples;
-    animation-duration: 3s;
+    animation-duration: 2s;
     border-radius: 10px;
     box-sizing: border-box;
 }

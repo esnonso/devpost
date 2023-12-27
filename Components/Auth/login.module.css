@@ -1,0 +1,38 @@
+.form{
+    margin-top: 5rem;
+    width: 100%;
+}
+
+.form-control-login{
+    width: 95%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.input{
+    height: 1.5rem;
+    margin-bottom: 1rem;
+    font: inherit;
+}
+
+.submit-btn{
+    height: 3rem;
+    width: 8rem;
+    font-size: larger;
+    background-color: #139D69;
+    border: none;
+    border-radius: 5px;
+    color:white;
+}
+
+@media screen and (min-width:800px) {
+    .form-control-login{
+        width: 60%;
+    }
+
+    .form-control-check {
+        width: 60%;
+    }
+}

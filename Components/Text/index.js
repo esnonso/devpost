@@ -29,6 +29,7 @@ export const PTags = (props) => {
     width: props.width,
     backgroundColor: props.back,
     borderRadius: props.radius,
+    borderBottom: props.borderBottom,
   };
   return (
     <p style={pStyles} className="mobile">

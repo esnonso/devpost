@@ -2,7 +2,6 @@ import { useState } from "react";
 import { PTags } from "@/Components/Text";
 import classes from "./staff.module.css";
 import Container from "@/Components/Containers/container";
-import Button from "@/Components/Button";
 import axios from "axios";
 import Modal from "@/Components/Modal";
 
@@ -11,33 +10,69 @@ export default function AddStaff(props) {
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [status, setStatus] = useState("");
+  const [role, setRole] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   const inputChangeHandler = (setState) => (e) => {
     setState(e.target.value);
   };
 
   const SubmitHandler = async (e) => {
+    setError("");
+    setMessage("");
+    setIsLoading(true);
     e.preventDefault();
     try {
-      const res = await axios.post("/api/staff", {
-        data: { firstname, lastname, email, status, password },
+      const res = await axios.post("/api/addStaff", {
+        data: { firstname, lastname, email, role, password },
       });
-      alert("User added!");
-      props.onHide();
+      setMessage(res.data.message);
+      document.getElementById("staff-form").reset();
     } catch (error) {
       console.log(error);
+      if (error.response.data) setError(error.response.data);
+      else setError("An error occured!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <Modal click={props.onHide}>
-      <form className={classes["staff-form"]} onSubmit={SubmitHandler}>
+      <form
+        className={classes["staff-form"]}
+        onSubmit={SubmitHandler}
+        id="staff-form"
+      >
         <PTags textAlign="center" fontSize="25px">
           Add new Staff
         </PTags>
 
         <Container flex="column" width="100%">
+          {error && (
+            <Container
+              width="100%"
+              margin="0 auto"
+              padding="0.5rem"
+              color="#F8D7DA"
+              radius="5px"
+            >
+              <small>{error}</small>
+            </Container>
+          )}
+          {message && (
+            <Container
+              width="100%"
+              margin="0 auto"
+              padding="0.5rem"
+              color="#D4EDDA"
+              radius="5px"
+            >
+              <small>{message}</small>
+            </Container>
+          )}
           <label>First Name</label>
           <input
             type="text"
@@ -76,11 +111,11 @@ export default function AddStaff(props) {
         </Container>
 
         <Container flex="column" width="100%">
-          <label>Status</label>
+          <label>Role</label>
           <select
             className={classes.input}
-            value={status}
-            onChange={inputChangeHandler(setStatus)}
+            value={role}
+            onChange={inputChangeHandler(setRole)}
           >
             <option>--Select--</option>
             <option>Administrator</option>
@@ -88,15 +123,9 @@ export default function AddStaff(props) {
             <option>Pharmacist</option>
           </select>
         </Container>
-        <Button
-          text={"Submit"}
-          back={"#139D69"}
-          color="white"
-          width="5rem"
-          height="2.5rem"
-          margin={"1rem 1rem 0 0"}
-          borderRadius={"5px"}
-        />
+        <button type="submit" disabled={isLoading} className="btn">
+          {isLoading ? "Loading..." : "Submit"}
+        </button>
       </form>
     </Modal>
   );

@@ -1,0 +1,15 @@
+.input{
+    width:100%;
+    height:5rem;
+    font:inherit;
+}
+
+.button{
+    padding: 0.5rem 1rem;
+    background-color: #139D69;
+    color: white;
+    font: inherit;
+    border: none;
+    width: 5rem;
+    margin: 0.2rem;
+}

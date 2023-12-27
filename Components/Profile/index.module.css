@@ -1,0 +1,17 @@
+.action{
+    color: white;
+    background-color: #139D69;
+    text-decoration: none;
+    width: fit-content;
+    padding: 0.3rem 0.7rem;
+    margin: 0.3rem;
+}
+
+.logout {
+    color: white;
+    background-color: black;
+    text-decoration: none;
+    width: fit-content;
+    padding: 0.3rem 0.7rem;
+    margin: 0.3rem;
+}
