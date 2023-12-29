@@ -1,0 +1,9 @@
+.form {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input {
+    font: inherit;
+    margin: 0.5rem 0;
+}

@@ -13,3 +13,55 @@
     width: 5rem;
     margin: 0.2rem;
 }
+
+.pres-container {
+    height: fit-content;
+    padding: 1rem;
+    left: 2.5%;
+    width: 95%;
+    background-color: white;
+    position: absolute;
+    overflow: auto;
+    top: 2.5%;
+    z-index: 4;
+    animation-name: examples;
+    animation-duration: 1s;
+    box-sizing: border-box;
+}
+
+.btn {
+    background-color: rgb(223, 39, 39);
+    color: white;
+    border: 1px gray solid;
+    border-radius: 3px;
+
+}
+
+.pres{
+    font:inherit
+}
+
+.btn-form {
+    background-color: #139D69;
+    color: white;
+    width: 10rem;
+    height: 2.5rem;
+    margin: 1rem 1rem 0 0;
+    border: none;
+    font: inherit;
+}
+
+.search{
+    font:inherit;
+    padding: 0.3rem;
+}
+
+@keyframes examples {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

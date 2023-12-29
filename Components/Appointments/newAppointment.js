@@ -1,47 +1,53 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import { Web5 } from "@web5/api";
 import Container from "../Containers/container";
 import { PTags } from "../Text";
 import classes from "./index.module.css";
 import axios from "axios";
-import Loader from "../Loader";
-import Modal from "../Modal";
-import Backdrop from "../Backdrop";
 
 export default function AppointmentForm() {
   const router = useRouter();
-  const [reason, setReason] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [test, setTest] = useState("");
+  const { status } = useSession();
+  const [apptType, setApptType] = useState("");
+  const [proposedDate, setProposedDate] = useState("");
+  const [testType, setTestType] = useState("");
   const [gender, setGender] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccesMessage] = useState("");
   const [error, setError] = useState("");
-
-  const hideSuccessMessageHandler = () => {
-    router.push("/appointments");
-  };
 
   const inputChangeHandler = (setState) => (e) => {
     setState(e.target.value);
   };
 
   const submitHandler = async (e) => {
-    setIsSubmitting(true);
-    e.preventDefault();
     try {
-      const response = await axios.post("/api/appointment", {
-        reason: reason,
-        gender: gender,
-        test: test,
-        did: 26549,
-        status: "awaiting",
-      });
-      setSuccesMessage(response.data.message);
-      setIsSubmitting(false);
+      setIsSubmitting(true);
+      e.preventDefault();
+      if (status === "unauthenticated") {
+        const { web5, did } = await Web5.connect();
+        await axios.post("/api/postAppointment", {
+          apptType: apptType,
+          gender: gender,
+          testType: testType,
+          did: did,
+          status: "awaiting",
+          proposedDate,
+        });
+      } else {
+        await axios.post("/api/postAppointment", {
+          apptType: apptType,
+          gender: gender,
+          testType: testType,
+          status: "awaiting",
+          proposedDate,
+        });
+      }
+      router.push("/appointments");
     } catch (error) {
-      setError(error.response.data);
-    } finally {
+      if (error.response) setError(error.response.data);
+      else setError("An error occured!");
       setIsSubmitting(false);
     }
   };
@@ -65,14 +71,14 @@ export default function AppointmentForm() {
               <small>Error 403: {error}</small>
             </Container>
           )}
-          <label className={classes.label} htmlFor="Reason">
-            Reason
+          <label className={classes.label} htmlFor="apptType">
+            Appointment Type
           </label>
 
           <select
             className={classes.input}
-            value={reason}
-            onChange={inputChangeHandler(setReason)}
+            value={apptType}
+            onChange={inputChangeHandler(setApptType)}
           >
             <option>Select </option>
             <option>Lab test</option>
@@ -80,18 +86,18 @@ export default function AppointmentForm() {
           </select>
         </Container>
 
-        {reason === "Lab test" && (
+        {apptType === "Lab test" && (
           <Container width="100%" flex="column">
-            <label className={classes.label} htmlFor="Test">
+            <label className={classes.label} htmlFor="TestType">
               Select test
             </label>
             <select
               className={classes.input}
-              value={test}
-              onChange={inputChangeHandler(setTest)}
+              value={testType}
+              onChange={inputChangeHandler(setTestType)}
             >
               <option>Select </option>
-              {labTests.map((l, i) => (
+              {labTestTypes.map((l, i) => (
                 <option key={i}>{l} </option>
               ))}
             </select>
@@ -113,23 +119,26 @@ export default function AppointmentForm() {
           </select>
         </Container>
 
+        <Container width="100%" flex="column">
+          <label className={classes.label} htmlFor="Gender">
+            Proposed Date:
+          </label>
+          <input
+            type="datetime-local"
+            className={classes.input}
+            value={proposedDate}
+            onChange={inputChangeHandler(setProposedDate)}
+          />
+        </Container>
+
         <Container width="100%" justify="flex-end">
           <button type="submit" disabled={isSubmitting} className="btn">
             {isSubmitting ? "Submitting..." : "Submit"}
           </button>
         </Container>
       </form>
-      {isLoading && <Loader />}
-      {successMessage && (
-        <>
-          <Backdrop />
-          <Modal click={hideSuccessMessageHandler}>
-            <p>{successMessage}</p>
-          </Modal>
-        </>
-      )}
     </Container>
   );
 }
 
-const labTests = ["Genotype", "XRAY", "Malaria"];
+const labTestTypes = ["Genotype", "XRAY", "Malaria"];

@@ -52,22 +52,35 @@ export default function UserProfile(props) {
             </Link>
             <Link
               href={"/doctors/all-complaints/pending"}
-              className={classes["action"]}
+              className={classes["actions"]}
             >
-              View Pending cases
+              Pending cases
             </Link>
           </>
         )}
+        {user.role === "Doctor" || user.role === "Lab Guy" ? (
+          <Link
+            href={"/doctors/all-appointments"}
+            className={classes["action"]}
+          >
+            Appointment requests
+          </Link>
+        ) : (
+          ""
+        )}
         {user.role === "User" && (
           <>
-            <Link href={"/user/messages"} className={classes["action"]}>
-              Messages
+            <Link href={"chat/new"} className={classes["action"]}>
+              +New Message
             </Link>
-            <Link href={"/user/appointments"} className={classes["action"]}>
-              Appointments
+            <Link href={"/chat"} className={classes["actions"]}>
+              My Messages
             </Link>
-            <Link href={"/user/prescriptions"} className={classes["action"]}>
-              Prescriptions
+            <Link href={"/appointments/new"} className={classes["action"]}>
+              +New Appointments
+            </Link>
+            <Link href={"/appointments"} className={classes["actions"]}>
+              My Appointments
             </Link>
           </>
         )}

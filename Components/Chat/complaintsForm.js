@@ -1,101 +1,57 @@
 import { useEffect, useState } from "react";
 import { Web5 } from "@web5/api";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import Container from "../Containers/container";
 import { PTags } from "../Text";
 import classes from "./index.module.css";
 import axios from "axios";
-import Loader from "../Loader";
-import Modal from "../Modal";
-import Backdrop from "../Backdrop";
 
 export default function ComplaintsForm() {
   const router = useRouter();
+  const { status } = useSession();
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [myDid, setMyDid] = useState("");
-
-  const hidemessageHandler = () => {
-    router.push("/chat");
-  };
 
   const inputChangeHandler = (setState) => (e) => {
     setState(e.target.value);
   };
-
-  const getDid = async () => {
-    const { web5, did } = await Web5.connect();
-    setMyDid(did);
-    setIsLoading(false);
-    // try {
-
-    //   const { protocols: existingProtocol, status: existingProtocolStatus } =
-    //     await web5.dwn.protocols.query({
-    //       message: {
-    //         filter: {
-    //           protocol: "https://esnonso.com/user",
-    //         },
-    //       },
-    //     });
-    //   // console.log({ existingProtocol, existingProtocolStatus });
-    //   if (
-    //     existingProtocolStatus.code !== 200 ||
-    //     existingProtocol.length === 0
-    //   ) {
-    //     const { protocol, status } = await web5.dwn.protocols.configure({
-    //       message: {
-    //         definition: userProtocolDefinition,
-    //       },
-    //     });
-    //     await protocol.send(did);
-    //   } else {
-    //     console.log("Protocol already installed");
-    //     const response = await web5.dwn.records.query({
-    //       message: {
-    //         filter: {
-    //           protocol: "https://esnonso.com/user",
-    //         },
-    //       },
-    //     });
-    //     console.log(response);
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
-  };
-
-  // const hidemessageHandler = () => {
-  //   //navigate out;
-  //   //window.location.reload();
-  // };
-
-  useEffect(() => {
-    getDid();
-  }, []);
 
   const submitHandler = async (e) => {
     setError("");
     setSuccessMessage("");
     setIsSubmitting(true);
     e.preventDefault();
+
     try {
-      const response = await axios.post("/api/postDidMessage", {
-        title: title,
-        message: message,
-        gender: gender,
-        ageRange: age,
-        did: myDid,
-        status: "awaiting",
-      });
-      setSuccessMessage(response.data.message);
+      if (status === "unauthenticated") {
+        const { web5, did } = await Web5.connect();
+        await axios.post("/api/postMessage", {
+          title: title,
+          message: message,
+          gender: gender,
+          ageRange: age,
+          did: did,
+          status: "awaiting",
+        });
+      } else {
+        await axios.post("/api/postMessage", {
+          title: title,
+          message: message,
+          gender: gender,
+          ageRange: age,
+          status: "awaiting",
+        });
+      }
+      router.push("/chat");
     } catch (error) {
-      setError(error.response.data);
+      if (error.response) setError(error.response.data);
+      else setError("An error occured!");
     } finally {
       setIsSubmitting(false);
     }
@@ -184,18 +140,6 @@ export default function ComplaintsForm() {
           </button>
         </Container>
       </form>
-      {isLoading && <Loader />}
-
-      {successMessage && (
-        <>
-          <Backdrop />
-          <Modal click={hidemessageHandler}>
-            <Container width="100%" margin="0 auto">
-              <small>{successMessage}</small>
-            </Container>
-          </Modal>
-        </>
-      )}
     </Container>
   );
 }

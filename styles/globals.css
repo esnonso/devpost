@@ -22,3 +22,14 @@ button:disabled {
     border: none;
     font:inherit;
 }
+
+.btn-form {
+    background-color: #139D69;
+    color: white;
+    width: 10rem;
+    height: 2.5rem;
+    margin: 1rem 1rem 0 0;
+    border: none;
+    font: inherit;
+    border-radius: 5px;
+}

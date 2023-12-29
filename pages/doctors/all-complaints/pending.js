@@ -15,7 +15,10 @@ export async function getServerSideProps(context) {
   await connectDatabase();
   const foundDoctor = await User.findOne({ email: session.user.email });
   if (foundDoctor.role !== "Doctor") throwError("Unauthorized user", 403);
-  const data = await Message.find({ attendedBy: foundDoctor._id });
+  const data = await Message.find({
+    attendedBy: foundDoctor._id,
+    status: "With a doctor",
+  });
 
   return {
     props: {

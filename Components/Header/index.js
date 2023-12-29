@@ -73,10 +73,11 @@ export default function Header(props) {
                     text="Logout"
                     color={"black"}
                     font="inherit"
-                    click={() => signOut()}
+                    click={async () => signOut()}
                   />
                 </>
               )}
+
               {status === "unauthenticated" && (
                 <>
                   <Button
@@ -84,12 +85,6 @@ export default function Header(props) {
                     color={"black"}
                     font="inherit"
                     click={() => router.push("/chat")}
-                  />
-                  <Button
-                    text="Prescriptions"
-                    color={"black"}
-                    font="inherit"
-                    click={() => router.push("/profile")}
                   />
                   <Button
                     text="Appointments"

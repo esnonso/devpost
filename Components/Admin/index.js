@@ -2,15 +2,18 @@ import { useState } from "react";
 import AddStaff from "./Staff/addStaff";
 import Button from "../Button";
 import Container from "../Containers/container";
-import classes from "./index.module.css";
-import { H1Tags, PTags } from "../Text";
+import { PTags } from "../Text";
+import PillForm from "./Pill/addPill";
 import Backdrop from "../Backdrop";
 
 export default function AdministaratorDashboard(props) {
   const [addStaff, showAddStaff] = useState(false);
+  const [addPill, showAddPill] = useState(false);
 
   const showStaffFormHandler = () => showAddStaff(true);
   const hideStaffFormHandler = () => showAddStaff(false);
+  const showPillFormHandler = () => showAddPill(true);
+  const hidePillFormHandler = () => showAddPill(false);
 
   return (
     <Container
@@ -41,12 +44,20 @@ export default function AdministaratorDashboard(props) {
           width="7rem"
           height={"2.5rem"}
           borderRadius={"5px"}
+          click={showPillFormHandler}
         />
       </Container>
       {addStaff && (
         <>
           <Backdrop />
           <AddStaff onHide={hideStaffFormHandler} />
+        </>
+      )}
+
+      {addPill && (
+        <>
+          <Backdrop />
+          <PillForm onHide={hidePillFormHandler} />
         </>
       )}
 

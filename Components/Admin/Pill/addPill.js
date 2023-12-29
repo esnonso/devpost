@@ -5,15 +5,14 @@ import Container from "@/Components/Containers/container";
 import axios from "axios";
 import Modal from "@/Components/Modal";
 
-export default function AddStaff(props) {
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+export default function PillForm(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [brand, setBrand] = useState("");
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [status, setStatus] = useState("");
 
   const inputChangeHandler = (setState) => (e) => {
     setState(e.target.value);
@@ -25,10 +24,13 @@ export default function AddStaff(props) {
     setIsLoading(true);
     e.preventDefault();
     try {
-      await axios.post("/api/addStaff", {
-        data: { firstname, lastname, email, role, password },
+      const res = await axios.post("/api/addPill", {
+        brand,
+        name,
+        price,
+        status,
       });
-      window.location.reload();
+      setMessage(res.data);
     } catch (error) {
       if (error.response) setError(error.response.data);
       else setError("An error occured!");
@@ -36,16 +38,11 @@ export default function AddStaff(props) {
       setIsLoading(false);
     }
   };
-
   return (
     <Modal click={props.onHide}>
-      <form
-        className={classes["form"]}
-        onSubmit={SubmitHandler}
-        id="staff-form"
-      >
+      <form className={classes["staff-form"]} onSubmit={SubmitHandler}>
         <PTags textAlign="center" fontSize="25px">
-          Add new Staff
+          Add new Pill
         </PTags>
 
         <Container flex="column" width="100%">
@@ -71,56 +68,45 @@ export default function AddStaff(props) {
               <small>{message}</small>
             </Container>
           )}
-          <label>First Name</label>
+          <label>Brand Name</label>
           <input
             type="text"
             className={classes.input}
-            value={firstname}
-            onChange={inputChangeHandler(setFirstname)}
-          />
-        </Container>
-        <Container flex="column" width="100%">
-          <label>Last Name</label>
-          <input
-            type="text"
-            className={classes.input}
-            value={lastname}
-            onChange={inputChangeHandler(setLastname)}
-          />
-        </Container>
-        <Container flex="column" width="100%">
-          <label>Email</label>
-          <input
-            type="text"
-            className={classes.input}
-            value={email}
-            onChange={inputChangeHandler(setEmail)}
+            value={brand}
+            onChange={inputChangeHandler(setBrand)}
           />
         </Container>
 
         <Container flex="column" width="100%">
-          <label>Password</label>
+          <label>Name</label>
           <input
-            type="password"
+            type="text"
             className={classes.input}
-            value={password}
-            onChange={inputChangeHandler(setPassword)}
+            value={name}
+            onChange={inputChangeHandler(setName)}
           />
         </Container>
 
         <Container flex="column" width="100%">
-          <label>Role</label>
+          <label>Price</label>
+          <input
+            type="number"
+            className={classes.input}
+            value={price}
+            onChange={inputChangeHandler(setPrice)}
+          />
+        </Container>
+
+        <Container flex="column" width="100%">
+          <label>Status</label>
           <select
+            value={status}
+            onChange={inputChangeHandler(setStatus)}
             className={classes.input}
-            value={role}
-            onChange={inputChangeHandler(setRole)}
           >
-            <option>--Select--</option>
-            <option>Administrator</option>
-            <option>Doctor</option>
-            <option>Pharmacist</option>
-            <option>User</option>
-            <option>Lab Guy</option>
+            <option>Select</option>
+            <option>In stock</option>
+            <option>Out of stock</option>
           </select>
         </Container>
         <button type="submit" disabled={isLoading} className="btn-form">

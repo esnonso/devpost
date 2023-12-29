@@ -7,6 +7,15 @@
     margin: 0.3rem;
 }
 
+.actions{
+    color: white;
+    background-color: #0f5037;
+    text-decoration: none;
+    width: fit-content;
+    padding: 0.3rem 0.7rem;
+    margin: 0.3rem;
+}
+
 .logout {
     color: white;
     background-color: black;

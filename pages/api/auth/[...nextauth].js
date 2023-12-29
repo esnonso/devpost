@@ -14,7 +14,9 @@ export const options = {
       async authorize(credentials, req) {
         await connectDatabase();
         try {
-          const user = await User.findOne({ email: credentials.email });
+          const user = await User.findOne({
+            email: credentials.email.toLowerCase(),
+          });
           if (!user) {
             throw new Error("Invalid Email address");
           }

@@ -17,6 +17,16 @@
     margin: 0.5rem 0;
 }
 
+.btn {
+    background-color: #139D69;
+    color: white;
+    width: 10rem;
+    height: 2rem;
+    margin: 1rem 1rem 0 0;
+    border: none;
+    font: inherit;
+}
+
 @media screen and (min-width:700px) and (max-width:900px) {
     .chat-container{
         width: 80%;

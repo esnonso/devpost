@@ -1,9 +1,9 @@
-import Complaints from "@/Components/Doctor/complaint";
+import SingleComplaintsForUnregisteredPatient from "@/Components/Chat/singleComplaint";
 import { connectDatabase } from "@/Mongodb";
 import Message from "@/Mongodb/Models/message";
 
-export default function SingleComplaints(props) {
-  return <Complaints complaint={props.complaint} />;
+export default function SingleComplaintsUnregisteredPatient(props) {
+  return <SingleComplaintsForUnregisteredPatient complaint={props.complaint} />;
 }
 
 export async function getStaticPaths() {
@@ -13,15 +13,15 @@ export async function getStaticPaths() {
   return {
     fallback: true,
     paths: complaints.map((c) => ({
-      params: { complaintId: c._id.toString() },
+      params: { chatId: c._id.toString() },
     })),
   };
 }
 
 export async function getStaticProps(context) {
-  const complaintId = context.params.complaintId;
+  const chatId = context.params.chatId;
   await connectDatabase();
-  const complaint = await Message.findById(complaintId);
+  const complaint = await Message.findById(chatId);
   return {
     props: {
       complaint: {
@@ -31,7 +31,7 @@ export async function getStaticProps(context) {
         ageRange: complaint.ageRange,
         status: complaint.status,
         did: complaint.did,
-        id: complaintId,
+        id: chatId,
         identifier: complaint.identifier,
       },
       revalidate: 10,

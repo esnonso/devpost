@@ -2,41 +2,36 @@ import Button from "../Button";
 import { useRouter } from "next/router";
 import Container from "../Containers/container";
 import { PTags } from "../Text";
-import { useParams } from "next/navigation";
 
-export default function PatientsComplaints(props) {
-  const params = useParams();
-
+export default function AppointmentRequests(props) {
   const router = useRouter();
-
   return (
     <Container margin="5rem 1rem" flex="column" minHeight="50vh">
       <PTags fontSize="25px" borderBottom="1px gray solid" margin="0.5rem">
-        {router.pathname === "/doctors/all-complaints/pending"
-          ? "Your Pending Requests"
-          : "All Message Requests"}
+        Appointment requests
       </PTags>
-      {props.messages.map((c) => {
+      {props.appointments.map((a) => {
         return (
           <Container
-            key={c.id}
+            key={a.id}
             width="100%"
             borderBottom="1px gray solid"
             align="center"
           >
-            {c.identifier === "UserId" && (
+            {a.identifier === "UserId" && (
               <span style={{ color: "#139d69", fontSize: "25px" }}>★</span>
             )}
             <PTags width="40%" margin="0.5rem">
-              {c.title}
+              {a.apptType}
             </PTags>
 
             <PTags width="40%" margin="0.5rem">
-              Gender: <b>{c.gender[0]}</b>
+              <b> Gender:</b> {a.gender[0]}
             </PTags>
 
             <PTags width="40%" margin="0.5rem">
-              Age: <b>{c.ageRange}</b>
+              <b> created: </b>
+              {a.created}
             </PTags>
 
             <Button
@@ -46,7 +41,7 @@ export default function PatientsComplaints(props) {
               padding={"0.3rem 2rem"}
               color="white"
               border={"none"}
-              click={() => router.push(`/doctors/all-complaints/${c.id}`)}
+              click={() => router.push(`/doctors/all-appointments/${a.id}`)}
             />
           </Container>
         );

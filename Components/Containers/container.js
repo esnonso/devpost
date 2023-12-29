@@ -21,6 +21,7 @@ const Container = (props) => {
     minHeight: props.minHeight,
     borderBottom: props.borderBottom,
     flexWrap: props.wrap,
+    border: props.border,
   };
 
   return (

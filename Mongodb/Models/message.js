@@ -2,23 +2,21 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
+    identifier: {
+      type: String,
+      required: true,
+    },
     title: {
       type: String,
       required: [true, "Title is required"],
       min: [3, "Title is too short"],
-    },
-    sender: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
     },
     message: {
       type: String,
       required: true,
       min: [20, "Message is too short"],
     },
-    did: {
-      type: String,
-    },
+
     gender: {
       type: String,
       required: [true, "Gender is required"],
@@ -29,10 +27,14 @@ const messageSchema = new mongoose.Schema(
     },
     status: { type: String, required: true },
 
-    attendedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+    attendedBy: mongoose.Schema.Types.ObjectId,
+
+    prescription: mongoose.Schema.Types.ObjectId,
+
+    did: String,
+
+    user: mongoose.Schema.Types.ObjectId,
+    replies: [],
   },
   { timestamps: true }
 );
