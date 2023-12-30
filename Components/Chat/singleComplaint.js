@@ -215,7 +215,7 @@ export default function SingleComplaintsForUnregisteredPatient({ complaint }) {
       await axios.post("/api/reopenChat", {
         messageId: complaint.id,
       });
-      window.location.reload();
+      rou;
     } catch (error) {
       setError("An error occured! Try again");
       setIsLoading(false);

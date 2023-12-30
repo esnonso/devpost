@@ -22,7 +22,8 @@ export default function SingleAppointment({ appts }) {
       const userData = await axios.post("/api/getUser");
       setRole(userData.data.user.role);
     } catch (error) {
-      console.log(error);
+      setError("An error occured");
+      return error;
     }
   };
 

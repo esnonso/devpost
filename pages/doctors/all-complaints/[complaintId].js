@@ -49,3 +49,5 @@ export async function getStaticProps(context) {
     },
   };
 }
+
+export const dynamic = "force-dynamic";
