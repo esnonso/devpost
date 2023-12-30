@@ -1,3 +1,5 @@
+import Head from "next/head";
+import { Fragment } from "react";
 import AdministaratorDashboard from "@/Components/Admin";
 import { connectDatabase } from "@/Mongodb";
 import User from "@/Mongodb/Models/user";

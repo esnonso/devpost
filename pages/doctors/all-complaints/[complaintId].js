@@ -22,7 +22,7 @@ export async function getStaticPaths() {
   const complaints = await Message.find({}, { _id: 1 });
 
   return {
-    fallback: true,
+    fallback: "blocking",
     paths: complaints.map((c) => ({
       params: { complaintId: c._id.toString() },
     })),
@@ -36,16 +36,16 @@ export async function getStaticProps(context) {
   return {
     props: {
       complaint: {
-        title: complaint.title,
-        message: complaint.message,
-        gender: complaint.gender,
-        ageRange: complaint.ageRange,
-        status: complaint.status,
-        did: complaint.did,
-        id: complaintId,
-        identifier: complaint.identifier,
+        title: complaint.title || "",
+        message: complaint.message || "",
+        gender: complaint.gender || "",
+        ageRange: complaint.ageRange || "",
+        status: complaint.status || "",
+        did: complaint.did || "",
+        id: complaintId || "",
+        identifier: complaint.identifier || "",
       },
-      revalidate: 10,
+      revalidate: 1,
     },
   };
 }

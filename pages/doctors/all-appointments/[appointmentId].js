@@ -22,7 +22,7 @@ export async function getStaticPaths() {
   const appts = await Appointment.find({}, { _id: 1 });
 
   return {
-    fallback: true,
+    fallback: "blocking",
     paths: appts.map((a) => ({
       params: { appointmentId: a._id.toString() },
     })),
@@ -36,16 +36,16 @@ export async function getStaticProps(context) {
   return {
     props: {
       appt: {
-        identifier: a.identifier,
-        apptType: a.apptType,
-        gender: a.gender,
-        status: a.status,
-        created: a.createdAt.toUTCString(),
-        proposedDate: a.proposedDate.toUTCString(),
-        approvedDate: a.approvedDate,
-        id: apptId,
+        identifier: a.identifier || "",
+        apptType: a.apptType || "",
+        gender: a.gender || "",
+        status: a.status || "",
+        created: a.createdAt.toUTCString() || "",
+        proposedDate: a.proposedDate.toUTCString() || "",
+        approvedDate: a.approvedDate || "",
+        id: apptId || "",
       },
-      revalidate: 10,
+      revalidate: 1,
     },
   };
 }

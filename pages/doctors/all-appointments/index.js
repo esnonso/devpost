@@ -34,6 +34,6 @@ export async function getStaticProps() {
         identifier: a.identifier,
       })),
     },
-    revalidate: 10,
+    revalidate: 1,
   };
 }
