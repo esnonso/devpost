@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Container from "../Containers/container";
 import ContainerFlexColumn from "../Containers/container-flex-column";
 import Button from "../Button";
@@ -5,7 +6,7 @@ import Twitter from "../Images/twitter.png";
 import In from "../Images/linked.png";
 import Insta from "../Images/insta.png";
 import { PTags } from "../Text";
-import classes from "./foorter.module.css";
+import classes from "./footer.module.css";
 import Image from "next/image";
 
 const Footer = () => {
@@ -36,13 +37,19 @@ const Footer = () => {
             Devpost
           </PTags>
           <PTags textAlign="left" margin="0 0 0.3rem 0">
-            Speak to a doctor
+            <Link href="/chat/new" className={classes["link"]}>
+              Speak to a doctor
+            </Link>
           </PTags>
           <PTags textAlign="left" margin="0 0 0.3rem 0">
-            Subscribe for health care
+            <Link href="/appointments/new" className={classes["link"]}>
+              Book an appointment
+            </Link>
           </PTags>
           <PTags textAlign="left" margin="0 0 0.3rem 0">
-            Book an appointment
+            <Link href="/subscribe/new" className={classes["link"]}>
+              Subscribe for health care
+            </Link>
           </PTags>
         </div>
 

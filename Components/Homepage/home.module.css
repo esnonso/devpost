@@ -18,7 +18,7 @@
 
 .call-a-doc{
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.2rem;
     box-sizing: border-box;
 }
 
@@ -31,7 +31,7 @@
     background-repeat: no-repeat;
     background-blend-mode: multiply;
     box-sizing: border-box;
-    padding: 0 0.5rem;
+    padding: 0 0.2rem;
 }
 
 .call-a-doc-img{

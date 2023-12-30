@@ -65,7 +65,8 @@ const LoginComponent = (props) => {
 
           <div className={classes["form-control-login"]}>
             <small style={{ marginBottom: "1rem" }}>
-              Not Registered? <Link href="/register">click to register</Link>
+              Not Registered?{" "}
+              <Link href="/subscribe/new">click to Subscribe and register</Link>
             </small>
           </div>
           <div className={classes["form-control-login"]}>

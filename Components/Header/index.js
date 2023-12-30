@@ -12,9 +12,11 @@ import Footer from "../Footer";
 import Backdrop from "../Backdrop";
 
 const links = [
-  { caption: "Speak with a doctor", url: "/chat/new" },
-  { caption: "Book an appointment", url: "/appointments/new" },
-  { caption: "Subscribe to health care", url: "/subscription/new" },
+  { caption: "Homepage", url: "/" },
+  { caption: "Chat with a doctor", url: "/chat/new" },
+  { caption: "Book appointment", url: "/appointments/new" },
+  { caption: "Subscribe to health care", url: "/subscribe/new" },
+  { caption: "About", url: "/about" },
 ];
 
 export default function Header(props) {
@@ -111,7 +113,7 @@ export default function Header(props) {
             <Container align="center" width="100%">
               <Container width="80%">
                 <h3 style={{ margin: 0 }}>DEVPOS</h3>
-                <Image src={Logo} alt="logo-cross" width={20} height={20} />
+                <Image src={Logo} alt="logo-cross" width={25} height={25} />
               </Container>
               <Container width="20%" justify="flex-end">
                 <Button
@@ -120,8 +122,9 @@ export default function Header(props) {
                   back={"white"}
                   height={"2rem"}
                   color="black"
-                  font="inherit"
+                  font="larger"
                   type="button"
+                  fontWeight="600"
                   click={hideSidebarHandler}
                 />
               </Container>

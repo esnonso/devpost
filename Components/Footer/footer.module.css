@@ -21,6 +21,11 @@
     margin: 0.2rem;
 }
 
+.link{
+    text-decoration: none;
+    color: white;
+}
+
 @media screen and (min-width:750px) {
     .support{
         width:25%

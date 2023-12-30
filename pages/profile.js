@@ -1,7 +1,18 @@
+import Head from "next/head";
+import { Fragment } from "react";
 import UserProfile from "@/Components/Profile";
 
 export default function Profile() {
-  return <UserProfile />;
+  return (
+    <Fragment>
+      <Head>
+        <title>Devpost web5 Profile</title>
+        <meta name="description" content="Login page" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <UserProfile />;
+    </Fragment>
+  );
 }
 
 // export async function getStaticProps() {}

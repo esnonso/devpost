@@ -36,7 +36,7 @@ export default function ComplaintsPage(props) {
 
   useEffect(() => {
     getMessages();
-  }, []);
+  }, [status]);
 
   return (
     <Container margin="5rem 1rem" flex="column" minHeight="50vh">
@@ -71,16 +71,16 @@ export default function ComplaintsPage(props) {
             borderBottom="1px gray solid"
             align="center"
           >
-            <PTags width="40%" margin="0.5rem">
+            <PTags width="20%" margin="0.5rem">
               {c.title}
             </PTags>
 
-            <PTags width="40%" margin="0.5rem">
+            <PTags width="30%" margin="0.5rem">
               Status: {c.status}
             </PTags>
 
             <PTags width="40%" margin="0.5rem">
-              Created: {c.createdAt}
+              Created: {new Date(c.createdAt).toUTCString()}
             </PTags>
 
             <Button

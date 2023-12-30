@@ -1,5 +1,16 @@
+import Head from "next/head";
+import { Fragment } from "react";
 import LoginComponent from "@/Components/Auth/login";
 
 export default function Login() {
-  return <LoginComponent />;
+  return (
+    <Fragment>
+      <Head>
+        <title>Devpost web5 Login</title>
+        <meta name="description" content="Login page" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <LoginComponent />;
+    </Fragment>
+  );
 }

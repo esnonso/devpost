@@ -1,9 +1,20 @@
+import Head from "next/head";
+import { Fragment } from "react";
 import Complaints from "@/Components/Doctor/complaint";
 import { connectDatabase } from "@/Mongodb";
 import Message from "@/Mongodb/Models/message";
 
 export default function SingleComplaints(props) {
-  return <Complaints complaint={props.complaint} />;
+  return (
+    <Fragment>
+      <Head>
+        <title>Devpost web5 Book Appointment</title>
+        <meta name="description" content="Doctor" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <Complaints complaint={props.complaint} />;
+    </Fragment>
+  );
 }
 
 export async function getStaticPaths() {

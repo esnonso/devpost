@@ -4,6 +4,7 @@ const Container = (props) => {
   const styles = {
     backgroundColor: props.color,
     display: "flex",
+    border: props.border,
     flexDirection: props.flex,
     justifyContent: props.justify,
     alignItems: props.align,
@@ -21,7 +22,6 @@ const Container = (props) => {
     minHeight: props.minHeight,
     borderBottom: props.borderBottom,
     flexWrap: props.wrap,
-    border: props.border,
   };
 
   return (

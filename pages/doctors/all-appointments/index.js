@@ -1,9 +1,20 @@
+import Head from "next/head";
+import { Fragment } from "react";
 import { connectDatabase } from "@/Mongodb";
 import Appointment from "@/Mongodb/Models/appointment";
 import AppointmentRequests from "@/Components/Doctor/allAppointments";
 
 export default function AllAppointmentRequests(props) {
-  return <AppointmentRequests appointments={props.appointments} />;
+  return (
+    <Fragment>
+      <Head>
+        <title>Devpost web5 Book Appointment</title>
+        <meta name="description" content="Doctor" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <AppointmentRequests appointments={props.appointments} />;
+    </Fragment>
+  );
 }
 
 export async function getStaticProps() {

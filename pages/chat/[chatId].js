@@ -1,9 +1,20 @@
+import Head from "next/head";
+import { Fragment } from "react";
 import SingleComplaintsForUnregisteredPatient from "@/Components/Chat/singleComplaint";
 import { connectDatabase } from "@/Mongodb";
 import Message from "@/Mongodb/Models/message";
 
 export default function SingleComplaintsUnregisteredPatient(props) {
-  return <SingleComplaintsForUnregisteredPatient complaint={props.complaint} />;
+  return (
+    <Fragment>
+      <Head>
+        <title>Devpost web5 Chat</title>
+        <meta name="description" content="Chat with doctor" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <SingleComplaintsForUnregisteredPatient complaint={props.complaint} />
+    </Fragment>
+  );
 }
 
 export async function getStaticPaths() {

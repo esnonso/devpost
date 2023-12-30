@@ -1,8 +1,8 @@
 import Head from "next/head";
 import { Fragment } from "react";
-import ComplaintsPage from "@/Components/Chat/complaints";
+import SubscriptionForm from "@/Components/Subscription/subscriptionForm";
 
-export default function Complaints() {
+export default function Subscribe() {
   return (
     <Fragment>
       <Head>
@@ -10,7 +10,7 @@ export default function Complaints() {
         <meta name="description" content="Chat with doctor" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <ComplaintsPage />;
+      <SubscriptionForm />;
     </Fragment>
   );
 }

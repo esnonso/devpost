@@ -44,7 +44,9 @@ export default function UserPrescription(props) {
             Prescription
           </PTags>
           <Container borderBottom="1px gray solid">
-            <PTags margin="0 0 0.5rem 0">Created: {date}</PTags>
+            <PTags margin="0 0 0.5rem 0">
+              Created: {new Date(date).toUTCString()}
+            </PTags>
           </Container>
           {pills.map((p) => (
             <Container

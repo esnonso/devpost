@@ -1,9 +1,20 @@
+import Head from "next/head";
+import { Fragment } from "react";
 import SingleAppointment from "@/Components/Appointments/singleAppointment";
 import { connectDatabase } from "@/Mongodb";
 import Appointment from "@/Mongodb/Models/appointment";
 
 export default function SingleAppts(props) {
-  return <SingleAppointment appts={props.appt} />;
+  return (
+    <Fragment>
+      <Head>
+        <title>Devpost web5 Book Appointment</title>
+        <meta name="description" content="Doctor" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <SingleAppointment appts={props.appt} />;
+    </Fragment>
+  );
 }
 
 export async function getStaticPaths() {

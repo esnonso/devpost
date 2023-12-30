@@ -28,7 +28,6 @@ export default async function handler(req, res) {
     const data = await foundMessage.save();
     return res.status(201).json({ message: "Complaint status updated" });
   } catch (error) {
-    console.log(error);
     if (error.status) {
       return res.status(error.status).json(error.message);
     } else {

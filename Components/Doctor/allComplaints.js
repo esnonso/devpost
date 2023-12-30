@@ -27,16 +27,17 @@ export default function PatientsComplaints(props) {
             {c.identifier === "UserId" && (
               <span style={{ color: "#139d69", fontSize: "25px" }}>★</span>
             )}
-            <PTags width="40%" margin="0.5rem">
+            <PTags width="30%" margin="0.5rem">
               {c.title}
             </PTags>
 
-            <PTags width="40%" margin="0.5rem">
-              Gender: <b>{c.gender[0]}</b>
+            <PTags width="20%" margin="0.5rem">
+              <b>Gender:</b> {c.gender[0]}
             </PTags>
 
             <PTags width="40%" margin="0.5rem">
-              Age: <b>{c.ageRange}</b>
+              <b>Age: </b>
+              {c.ageRange}
             </PTags>
 
             <Button

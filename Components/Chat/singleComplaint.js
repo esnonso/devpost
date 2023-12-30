@@ -166,7 +166,7 @@ export default function SingleComplaintsForUnregisteredPatient({ complaint }) {
     } else {
       fetchAuthUserReplies();
     }
-  }, []);
+  }, [status]);
 
   const sendReplyHandler = async (e) => {
     try {
@@ -209,6 +209,19 @@ export default function SingleComplaintsForUnregisteredPatient({ complaint }) {
     }
   };
 
+  const reopenChatHandler = async () => {
+    try {
+      setIsLoading(true);
+      await axios.post("/api/reopenChat", {
+        messageId: complaint.id,
+      });
+      window.location.reload();
+    } catch (error) {
+      setError("An error occured! Try again");
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Container width="100%" margin="5rem 0 0 0" flex="column" padding="1rem">
       {complaint.status === "Completed" && (
@@ -222,6 +235,16 @@ export default function SingleComplaintsForUnregisteredPatient({ complaint }) {
             border={"none"}
             margin="0.2rem"
             click={showPrescriptionHandler}
+          />
+          <Button
+            text="Re Open"
+            width="fit-content"
+            back={"#139d69"}
+            padding={"0.3rem 2rem"}
+            color="white"
+            border={"none"}
+            margin="0.2rem"
+            click={reopenChatHandler}
           />
         </Container>
       )}
@@ -268,7 +291,7 @@ export default function SingleComplaintsForUnregisteredPatient({ complaint }) {
             </PTags>
             <Container>
               <small>
-                <b>Time:</b> {r.time}
+                <b>Time:</b> {new Date(r.time).toUTCString()}
               </small>
             </Container>
           </Container>
@@ -283,7 +306,9 @@ export default function SingleComplaintsForUnregisteredPatient({ complaint }) {
       ></textarea>
       <button
         className={classes.button}
-        disabled={complaint.status === "awaiting"}
+        disabled={
+          complaint.status === "awaiting" || complaint.status === "Completed"
+        }
         onClick={sendReplyHandler}
       >
         Send

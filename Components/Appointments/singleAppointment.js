@@ -49,7 +49,7 @@ export default function SingleAppointment({ appts }) {
       });
       window.location.reload();
     } catch (error) {
-      console.log(error);
+      setError("An error occured");
     } finally {
       setIsLoading(false);
     }

@@ -50,6 +50,7 @@ export default function ComplaintsForm() {
       }
       router.push("/chat");
     } catch (error) {
+      console.log(error);
       if (error.response) setError(error.response.data);
       else setError("An error occured!");
     } finally {
