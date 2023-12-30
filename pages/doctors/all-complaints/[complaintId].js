@@ -17,6 +17,8 @@ export default function SingleComplaints(props) {
   );
 }
 
+export const dynamic = "force-dynamic";
+
 export async function getStaticPaths() {
   await connectDatabase();
   const complaints = await Message.find({}, { _id: 1 });
@@ -49,5 +51,3 @@ export async function getStaticProps(context) {
     },
   };
 }
-
-export const dynamic = "force-dynamic";
