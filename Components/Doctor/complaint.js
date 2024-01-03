@@ -100,6 +100,7 @@ export default function Complaints({ id }) {
             return data;
           })
         );
+        console.log(receivedMessages);
         return receivedMessages;
       } else {
         console.log("error", response.status);
