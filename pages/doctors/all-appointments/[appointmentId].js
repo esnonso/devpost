@@ -12,7 +12,7 @@ export default function SingleAppts(props) {
         <meta name="description" content="Doctor" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <SingleAppointment appts={props.appt} />;
+      <SingleAppointment id={props.id} />;
     </Fragment>
   );
 }
@@ -31,20 +31,9 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
   const apptId = context.params.appointmentId;
-  await connectDatabase();
-  const a = await Appointment.findById(apptId);
   return {
     props: {
-      appt: {
-        identifier: a.identifier || "",
-        apptType: a.apptType || "",
-        gender: a.gender || "",
-        status: a.status || "",
-        created: a.createdAt.toUTCString() || "",
-        proposedDate: a.proposedDate.toUTCString() || "",
-        approvedDate: a.approvedDate || "",
-        id: apptId || "",
-      },
+      id: apptId,
       revalidate: 1,
     },
   };

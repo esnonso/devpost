@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Web5 } from "@web5/api";
 import Container from "../Containers/container";
 import { PTags } from "../Text";
 import classes from "./index.module.css";
+import { appointmentProtocolDefinition } from "@/Web5/protocol";
 import axios from "axios";
+import Loader from "../Loader";
 
 export default function AppointmentForm() {
   const router = useRouter();
@@ -16,23 +18,64 @@ export default function AppointmentForm() {
   const [gender, setGender] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [userDid, setDid] = useState("");
+  const [loading, setIsLoading] = useState(false);
 
   const inputChangeHandler = (setState) => (e) => {
     setState(e.target.value);
   };
+
+  const createChatProtocolHandler = async () => {
+    try {
+      setIsLoading(true);
+      const { web5, did } = await Web5.connect();
+      if (typeof window !== "undefined") localStorage.setItem("did", did);
+      setDid(did);
+      const { protocols: existingProtocol, status: existingProtocolStatus } =
+        await web5.dwn.protocols.query({
+          message: {
+            filter: {
+              protocol: "http://esnonso.com/book-appointment-protocol",
+            },
+          },
+        });
+      if (
+        existingProtocolStatus.code !== 200 ||
+        existingProtocol.length === 0
+      ) {
+        const { protocol, status } = await web5.dwn.protocols.configure({
+          message: {
+            definition: appointmentProtocolDefinition,
+          },
+        });
+        await protocol.send(did);
+      } else {
+        return;
+      }
+    } catch (error) {
+      setError("An error occured");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      createChatProtocolHandler();
+    }
+  }, [status]);
 
   const submitHandler = async (e) => {
     try {
       setIsSubmitting(true);
       e.preventDefault();
       if (status === "unauthenticated") {
-        const { web5, did } = await Web5.connect();
         await axios.post("/api/postAppointment", {
+          userDid,
           apptType: apptType,
           gender: gender,
           testType: testType,
-          did: did,
-          status: "awaiting",
+          status: "Awaiting",
           proposedDate,
         });
       } else {
@@ -40,7 +83,7 @@ export default function AppointmentForm() {
           apptType: apptType,
           gender: gender,
           testType: testType,
-          status: "awaiting",
+          status: "Awaiting",
           proposedDate,
         });
       }
@@ -54,6 +97,7 @@ export default function AppointmentForm() {
 
   return (
     <Container margin="5rem 1rem 0 1rem" flex="column">
+      {loading && <Loader />}
       <form className={classes["chat-container"]} onSubmit={submitHandler}>
         <PTags fontSize="25px" textAlign="center" margin="0 0 1rem 0">
           Book Appointment

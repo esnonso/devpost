@@ -54,17 +54,25 @@ export default function UserProfile(props) {
               href={"/doctors/all-complaints/pending"}
               className={classes["actions"]}
             >
-              Pending cases
+              Pending complaints
             </Link>
           </>
         )}
         {user.role === "Doctor" || user.role === "Lab Guy" ? (
-          <Link
-            href={"/doctors/all-appointments"}
-            className={classes["action"]}
-          >
-            Appointment requests
-          </Link>
+          <>
+            <Link
+              href={"/doctors/all-appointments"}
+              className={classes["action"]}
+            >
+              Appointment requests
+            </Link>
+            <Link
+              href={"/doctors/all-appointments/scheduled"}
+              className={classes["action"]}
+            >
+              Scheduled Appts
+            </Link>
+          </>
         ) : (
           ""
         )}

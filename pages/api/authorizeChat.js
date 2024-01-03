@@ -9,18 +9,23 @@ export default async function AuthorizeChat(req, res) {
   try {
     const { did, chatId } = req.body;
     let userId;
+    let role;
     const session = await getServerSession(req, res, options);
     await connectDatabase();
     if (session) {
       const user = await User.findOne({ email: session.user.email });
       userId = user._id;
+      role = user.role;
     }
     const data = await Message.findById(chatId);
     if (data.did !== did && !session) throwError("Unauthorized Access", 403);
-
-    if (data.user.toString() !== userId.toString() && session)
-      throwError("Unauthorized Access", 403);
-    return res.status(200).json("Authorized");
+    if (session && data.identifier === "UserId") {
+      if (role !== "Doctor") {
+        if (data.user.toString() !== userId.toString())
+          throwError("Unauthorized Access", 403);
+      }
+    }
+    return res.status(200).json(data);
   } catch (error) {
     if (error.status) {
       return res.status(error.status).json(error.message);

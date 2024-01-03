@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { PTags } from "@/Components/Text";
+import { Web5 } from "@web5/api";
 import classes from "../index.module.css";
 import Container from "@/Components/Containers/container";
 import axios from "axios";
@@ -24,11 +25,12 @@ export default function AddStaff(props) {
     setMessage("");
     setIsLoading(true);
     e.preventDefault();
+
     try {
       await axios.post("/api/addStaff", {
         data: { firstname, lastname, email, role, password },
       });
-      window.location.reload();
+      //window.location.reload();
     } catch (error) {
       if (error.response) setError(error.response.data);
       else setError("An error occured!");

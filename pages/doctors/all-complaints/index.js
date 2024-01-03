@@ -19,7 +19,7 @@ export default function AllPatientsComplaints(props) {
 
 export async function getStaticProps() {
   await connectDatabase();
-  const data = await Message.find({ status: "awaiting" });
+  const data = await Message.find({ status: "Awaiting" });
   return {
     props: {
       messages: data.map((m) => ({

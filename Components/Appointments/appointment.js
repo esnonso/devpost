@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { Web5 } from "@web5/api";
 import Container from "../Containers/container";
 import { PTags } from "../Text";
 import Button from "../Button";
@@ -18,17 +17,16 @@ export default function Appointments() {
   const getAppointments = async () => {
     try {
       setIsLoading(true);
-      let response;
-      if (status === "unauthenticated") {
-        const { web5, did } = await Web5.connect();
-        response = await axios.post("/api/getAppointments", {
-          did: did,
-        });
-      } else {
-        response = await axios.post("/api/getAppointments");
+      let did;
+      if (typeof window !== "undefined") {
+        did = localStorage.getItem("did");
       }
+      const response = await axios.post("/api/getAppointments", {
+        did: did,
+      });
       setAppointments(response.data);
     } catch (error) {
+      console.log(error);
       if (error.response) setError(error.response.data);
       else setError("An error occured!");
     } finally {
@@ -38,7 +36,7 @@ export default function Appointments() {
 
   useEffect(() => {
     getAppointments();
-  }, [status]);
+  }, []);
 
   return (
     <Container margin="5rem 1rem" flex="column" minHeight="50vh">

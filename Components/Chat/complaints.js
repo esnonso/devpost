@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { Web5 } from "@web5/api";
 import Button from "../Button";
 import Container from "../Containers/container";
 import { PTags } from "../Text";
@@ -18,10 +17,12 @@ export default function ComplaintsPage(props) {
   const getMessages = async () => {
     try {
       let response;
-      if (status === "unauthenticated") {
-        const { web5, did } = await Web5.connect();
-        response = await axios.post("/api/getMessages", { did: did });
-        setMessages(response.data.messages);
+      if (status === "unauthenticated" && typeof window !== "undefined") {
+        const did = localStorage.getItem("did");
+        if (did !== null) {
+          response = await axios.post("/api/getMessages", { did: did });
+          setMessages(response.data.messages);
+        }
       } else {
         response = await axios.post("/api/getMessages");
         setMessages(response.data.messages);
@@ -70,18 +71,9 @@ export default function ComplaintsPage(props) {
             width="100%"
             borderBottom="1px gray solid"
             align="center"
+            justify="space-between"
           >
-            <PTags width="20%" margin="0.5rem">
-              {c.title}
-            </PTags>
-
-            <PTags width="30%" margin="0.5rem">
-              Status: {c.status}
-            </PTags>
-
-            <PTags width="40%" margin="0.5rem">
-              Created: {new Date(c.createdAt).toUTCString()}
-            </PTags>
+            <PTags margin="0.5rem">{c.title}</PTags>
 
             <Button
               text="View"

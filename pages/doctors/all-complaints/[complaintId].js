@@ -12,7 +12,7 @@ export default function SingleComplaints(props) {
         <meta name="description" content="Doctor" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <Complaints complaint={props.complaint} />;
+      <Complaints id={props.id} />;
     </Fragment>
   );
 }
@@ -32,21 +32,10 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context) {
-  const complaintId = context.params.complaintId;
-  await connectDatabase();
-  const complaint = await Message.findById(complaintId);
+  const chatId = context.params.complaintId;
   return {
     props: {
-      complaint: {
-        title: complaint.title || "",
-        message: complaint.message || "",
-        gender: complaint.gender || "",
-        ageRange: complaint.ageRange || "",
-        status: complaint.status || "",
-        did: complaint.did || "",
-        id: complaintId || "",
-        identifier: complaint.identifier || "",
-      },
+      id: chatId || "",
       revalidate: 1,
     },
   };

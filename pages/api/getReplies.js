@@ -17,6 +17,10 @@ export default async function handler(req, res) {
       replies: data.replies || [],
     });
   } catch (error) {
-    return res.status(500).json("An error occured");
+    if (error.status) {
+      return res.status(error.status).json(error.message);
+    } else {
+      return res.status(500).json("An error occured");
+    }
   }
 }

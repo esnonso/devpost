@@ -20,7 +20,7 @@ export default function AllAppointmentRequests(props) {
 export async function getStaticProps() {
   await connectDatabase();
   const data = await Appointment.find({
-    status: "Awaiting",
+    status: "Approved",
   });
 
   return {

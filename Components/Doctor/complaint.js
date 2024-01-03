@@ -1,40 +1,66 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { Web5 } from "@web5/api";
 import Container from "../Containers/container";
 import { PTags } from "../Text";
 import Button from "../Button";
 import classes from "./index.module.css";
 import { userProtocolDefinition } from "@/Web5/protocol";
-import axios, { all } from "axios";
+import axios from "axios";
 import Loader from "../Loader";
 import Prescription from "./prescription";
 
-export default function Complaints({ complaint }) {
+export default function Complaints({ id }) {
   const router = useRouter();
-  const { status } = useSession();
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [prescription, showPrescription] = useState(false);
   const [reply, setReply] = useState("");
   const [replies, setReplies] = useState([]);
   const [role, setRole] = useState("");
+  const [patientDid, setPatientDid] = useState("");
+  const [webFive, setWebFive] = useState(null);
+  const [doctorDid, setDoctorDid] = useState("");
+  const [complaint, setComplaint] = useState("");
 
   const showPrescriptionHandler = () => showPrescription(true);
   const hidePrescriptionHandler = () => showPrescription(false);
 
-  const fetchSentReplies = async () => {
+  const getMessageDetails = async () => {
     try {
-      setIsLoading(true);
       const userData = await axios.post("/api/getUser");
       if (userData.data.user.role !== "Doctor") router.push("/");
       setRole(userData.data.user.role);
-      const { web5, did } = await Web5.connect();
+      const response = await axios.post(`/api/authorizeChat`, {
+        chatId: id,
+      });
+      setComplaint(response.data);
+      if (response.data.identifier === "Web5") {
+        const { web5, did } = await Web5.connect();
+        setWebFive(web5);
+        setDoctorDid(did);
+        setPatientDid(response.data.did);
+        return {
+          data: response.data,
+          webFive: web5,
+          patDid: response.data.did,
+        };
+      }
+      if (response.data.identifier === "UserId") {
+        setReplies(response.data.replies);
+        return { data: response.data };
+      }
+    } catch (error) {
+      setError("An error occured");
+    }
+  };
+
+  const fetchDoctorsMessagesHandler = async (web5) => {
+    try {
       const response = await web5.dwn.records.query({
         message: {
           filter: {
-            protocol: "https://esnonso.com/chat-with-doctor-protocol",
+            protocol: "http://esnonso.com/chat-with-doc-protocol",
           },
         },
       });
@@ -48,22 +74,21 @@ export default function Complaints({ complaint }) {
         );
         return sentChats;
       } else {
-        console.log("error", response.status);
+        return "error", response.status;
       }
     } catch (error) {
-      return error;
+      setError("An error occured");
     }
   };
 
-  const fetchReceivedReplies = async () => {
+  const fetchPatientMessagesHandler = async (web5, did) => {
     try {
-      const { web5, did } = await Web5.connect();
       const response = await web5.dwn.records.query({
         from: did,
         message: {
           filter: {
-            protocol: "https://esnonso.com/chat-with-doctor-protocol",
-            schema: "http://esnonso.com/user/user-chat-schema",
+            protocol: "http://esnonso.com/chat-with-doc-protocol",
+            schema: "http://esnonso.com/chat-with-doctor-schema",
           },
         },
       });
@@ -80,87 +105,79 @@ export default function Complaints({ complaint }) {
         console.log("error", response.status);
       }
     } catch (error) {
-      return error;
+      setError("An error occured");
     }
   };
 
-  const getAllRepliesHandler = async () => {
+  const arrangeRepliesForThisComplaintHandler = async () => {
     try {
       setIsLoading(true);
-      const allSent = await fetchSentReplies();
-      const sent = allSent.filter((r) => r.complaintId === complaint.id);
-      const allReceived = await fetchReceivedReplies();
-      const received = allReceived.filter(
-        (r) => r.complaintId === complaint.id
-      );
-      const replies = sent.concat(received);
-      setReplies(replies);
-      setIsLoading(false);
+      const m = await getMessageDetails();
+      if (m.data.identifier === "Web5" && m.data.status !== "Awaiting") {
+        const allSent = await fetchDoctorsMessagesHandler(m.webFive);
+        const sent = allSent.filter((r) => r.complaintId === id);
+        const allReceived = await fetchPatientMessagesHandler(
+          m.webFive,
+          m.patDid
+        );
+        const received = allReceived.filter((r) => r.complaintId === id);
+        const replies = sent.concat(received);
+        setReplies(replies);
+      }
     } catch (err) {
-      return err;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchAuthUserReplies = async () => {
-    try {
-      setIsLoading(true);
-      const userData = await axios.post("/api/getUser");
-      if (userData.data.user.role !== "Doctor") router.push("/");
-      setRole(userData.data.user.role);
-      const response = await axios.post("/api/getReplies", {
-        messageId: complaint.id,
-      });
-      setReplies(response.data.replies);
-    } catch (error) {
-      console.log(error);
+      console.log(err);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (complaint.identifier === "Web5") {
-      getAllRepliesHandler();
-    } else {
-      fetchAuthUserReplies();
-    }
-  }, [status]);
+    arrangeRepliesForThisComplaintHandler();
+  }, []);
 
-  const attendToComplain = async () => {
+  const createChatProtocolHandler = async () => {
+    try {
+      const { protocols: existingProtocol, status: existingProtocolStatus } =
+        await webFive.dwn.protocols.query({
+          message: {
+            filter: {
+              protocol: "http://esnonso.com/chat-with-doc-protocol",
+            },
+          },
+        });
+      if (
+        existingProtocolStatus.code !== 200 ||
+        existingProtocol.length === 0
+      ) {
+        const { protocol, status } = await webFive.dwn.protocols.configure({
+          message: {
+            definition: userProtocolDefinition,
+          },
+        });
+        await protocol.send(doctorDid);
+      } else {
+        return;
+      }
+    } catch (error) {
+      setError("An error occured");
+    }
+  };
+
+  const attendToComplainHandler = async () => {
     try {
       setIsLoading(true);
-      await axios.post("/api/changeMessageStatus", {
-        messageId: complaint.id,
+      const response = await axios.post("/api/changeMessageStatus", {
+        messageId: id,
+        did: doctorDid,
+        status: "With a Doctor",
       });
+      setComplaint(response.data);
       if (complaint.identifier === "Web5") {
-        const { web5, did } = await Web5.connect();
-        const { protocols: existingProtocol, status: existingProtocolStatus } =
-          await web5.dwn.protocols.query({
-            message: {
-              filter: {
-                protocol: "https://esnonso.com/chat-with-doctor-potocol",
-              },
-            },
-          });
-        if (
-          existingProtocolStatus.code !== 200 ||
-          existingProtocol.length === 0
-        ) {
-          const { protocol, status } = await web5.dwn.protocols.configure({
-            message: {
-              definition: userProtocolDefinition,
-            },
-          });
-          await protocol.send(did);
-        } else {
-          return;
-        }
+        createChatProtocolHandler();
       }
-      window.location.reload();
     } catch (error) {
-      setError(error.response.data);
+      setError(error.message);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -169,39 +186,39 @@ export default function Complaints({ complaint }) {
     try {
       setIsLoading(true);
       e.preventDefault();
+
       if (complaint.identifier === "Web5") {
         var currentdate = new Date();
-        const recipientDid = complaint.did;
-        const { web5, did } = await Web5.connect();
         const chat = {
-          complaintId: complaint.id,
+          complaintId: id,
           message: reply,
           time: currentdate,
           author: "Doctor",
         };
-        const { record } = await web5.dwn.records.write({
+        const { record } = await webFive.dwn.records.write({
           data: chat,
           message: {
-            protocol: "https://esnonso.com/chat-with-doctor-protocol",
+            protocol: "http://esnonso.com/chat-with-doc-protocol",
             protocolPath: "chat",
-            schema: "http://esnonso.com/user/user-chat-schema",
-            recipient: recipientDid,
+            schema: "http://esnonso.com/chat-with-doctor-schema",
+            recipient: patientDid,
           },
         });
-        await record.send(recipientDid);
+        await record.send(patientDid);
         setReply("");
-        getAllRepliesHandler();
+        arrangeRepliesForThisComplaintHandler();
       }
       if (complaint.identifier === "UserId") {
-        await axios.post("/api/changeMessageStatus", {
-          messageId: complaint.id,
+        await axios.post("/api/postMessageReply", {
+          messageId: id,
           reply: { message: reply, author: "Doctor", time: new Date() },
         });
         setReply("");
-        fetchAuthUserReplies();
+        getMessageDetails();
       }
     } catch (error) {
       console.log(error);
+      setError("An error occured");
     } finally {
       setIsLoading(false);
     }
@@ -216,7 +233,7 @@ export default function Complaints({ complaint }) {
     >
       {role === "Doctor" && (
         <Container margin="0 0 2rem 0">
-          {complaint.status === "awaiting" && (
+          {complaint.status === "Awaiting" && (
             <Button
               text="Attend"
               width="fit-content"
@@ -225,7 +242,7 @@ export default function Complaints({ complaint }) {
               margin="0.2rem"
               color="white"
               border={"none"}
-              click={attendToComplain}
+              click={attendToComplainHandler}
             />
           )}
           <Button
@@ -262,10 +279,7 @@ export default function Complaints({ complaint }) {
         </Container>
       )}
       {prescription && (
-        <Prescription
-          onHide={hidePrescriptionHandler}
-          messageId={complaint.id}
-        />
+        <Prescription onHide={hidePrescriptionHandler} messageId={id} />
       )}
       <PTags fontWeight="600" margin="0 0 0.5rem 0">
         Title: {complaint.title}
@@ -273,9 +287,16 @@ export default function Complaints({ complaint }) {
       <PTags fontWeight="600" margin="0 0 0.5rem 0">
         Status:{" "}
         <span
-          style={{ color: complaint.status === "awaiting" ? "red" : "green" }}
+          style={{
+            color:
+              complaint.status === "Awaiting"
+                ? "red"
+                : complaint.status === "With a doctor"
+                ? "Yellow"
+                : "green",
+          }}
         >
-          {complaint.status.toUpperCase()}
+          {complaint.status}
         </span>
       </PTags>
 
@@ -314,13 +335,13 @@ export default function Complaints({ complaint }) {
       ></textarea>
       <button
         className={classes.button}
-        disabled={complaint.status === "awaiting"}
+        disabled={complaint.status === "Awaiting"}
         onClick={sendReplyHandler}
       >
         Send
       </button>
 
-      {loading && <Loader />}
+      {loading && <Loader message={"Loading conversation"} />}
     </Container>
   );
 }

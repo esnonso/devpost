@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Web5 } from "@web5/api";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -30,14 +30,15 @@ export default function ComplaintsForm() {
 
     try {
       if (status === "unauthenticated") {
-        const { web5, did } = await Web5.connect();
+        const { did } = await Web5.connect();
+        if (typeof window !== "undefined") localStorage.setItem("did", did);
         await axios.post("/api/postMessage", {
           title: title,
           message: message,
           gender: gender,
           ageRange: age,
           did: did,
-          status: "awaiting",
+          status: "Awaiting",
         });
       } else {
         await axios.post("/api/postMessage", {
@@ -45,12 +46,11 @@ export default function ComplaintsForm() {
           message: message,
           gender: gender,
           ageRange: age,
-          status: "awaiting",
+          status: "Awaiting",
         });
       }
       router.push("/chat");
     } catch (error) {
-      console.log(error);
       if (error.response) setError(error.response.data);
       else setError("An error occured!");
     } finally {

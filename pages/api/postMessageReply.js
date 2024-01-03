@@ -9,15 +9,18 @@ export default async function handler(req, res) {
   try {
     await connectDatabase();
     let data;
-    const { messageId, status, did } = req.body;
+    const { messageId, reply } = req.body;
     const session = await getServerSession(req, res, options);
     if (!session) throwError("User not authenticated", 403);
     const foundUser = await User.findOne({ email: session.user.email });
-    if (foundUser.role !== "Doctor") throwError("An error occured", 500);
     const foundMessage = await message.findById(messageId);
-    foundMessage.status = status;
-    foundMessage.attendedBy = foundUser._id;
-    foundMessage.doctorDid = did;
+    if (
+      foundUser._id.toString() !== foundMessage.attendedBy.toString() &&
+      foundMessage.user.toString() !== foundUser._id.toString()
+    )
+      throwError("An error occured", 500);
+
+    foundMessage.replies.push(reply);
     data = await foundMessage.save();
     return res.status(201).json(data);
   } catch (error) {

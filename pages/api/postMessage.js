@@ -23,12 +23,12 @@ export default async function handler(req, res) {
     if (!session) {
       openComplaint = await Message.findOne({
         did: data.did,
-        status: "awaiting" || "with a doctor",
+        status: "Awaiting" || "with a doctor",
       });
     } else {
       openComplaint = await Message.findOne({
         user: userId,
-        status: "awaiting" || "with a doctor",
+        status: "Awaiting" || "with a doctor",
       });
     }
 

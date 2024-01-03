@@ -8,24 +8,30 @@ import { throwError } from "@/Components/Error/errorFunction";
 export default async function handler(req, res) {
   try {
     await connectDatabase();
-    const { apptId, date, apptType } = req.body;
-    if (!date) throwError("Select a valid Date", 403);
+    const { apptId, date, apptType, attendantDid } = req.body;
+    // if (!date) throwError("Select a valid Date", 403);
     const session = await getServerSession(req, res, options);
     if (!session) throwError("User not authenticated", 403);
+
     const foundDoctor = await User.findOne({ email: session.user.email });
     if (foundDoctor.role !== "Doctor" && foundDoctor.role !== "Lab Guy")
       throwError("Unauthorized access", 403);
+
     if (foundDoctor.role === "Doctor" && apptType == "Lab test")
       throwError("You can only approve to see a doctor", 403);
+
     if (foundDoctor.role === "Lab Guy" && apptType == "See a doctor")
       throwError("You can only approve tests", 403);
+
     const foundAppt = await Appointment.findById(apptId);
     foundAppt.status = "Approved";
-    foundAppt.approvedDate = date;
-    foundAppt.scheduledWith = foundDoctor.name;
+    foundAppt.approvedDate = date || "";
+    foundAppt.scheduledWith = foundDoctor._id;
+    if (foundAppt.identifier === "Web5") foundAppt.attendantDid = attendantDid;
     await foundAppt.save();
-    return res.status(201).json({ appt: "Appointment approved" });
+    return res.status(201).json(foundAppt);
   } catch (error) {
+    console.log(error);
     if (error.status) {
       return res.status(error.status).json(error.message);
     } else {

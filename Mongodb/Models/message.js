@@ -25,13 +25,15 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: [true, "Age is required"],
     },
-    status: { type: String, required: true },
+    status: String,
 
     attendedBy: mongoose.Schema.Types.ObjectId,
 
     prescription: mongoose.Schema.Types.ObjectId,
 
     did: String,
+
+    doctorDid: String,
 
     user: mongoose.Schema.Types.ObjectId,
     replies: [],

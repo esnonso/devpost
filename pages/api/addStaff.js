@@ -20,12 +20,14 @@ export default async function POST(req, res) {
 
     const user = await User.findOne({ email: data.email });
     if (user) throwError("User Exists", 409);
+
     await new User({
       name: `${data.firstname} ${data.lastname}`,
       email: data.email,
       password: await bcrypt.hash(data.password, 10),
       role: data.role || "user",
     }).save();
+
     return res.status(201).json({ message: "User creation success!" });
   } catch (error) {
     if (error.status) {

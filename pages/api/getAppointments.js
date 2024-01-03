@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     }
     let data;
     if (!session) {
-      data = await Appointment.find({ did: did });
+      data = await Appointment.find({ userDid: did });
     }
     if (session) {
       data = await Appointment.find({ user: userId });

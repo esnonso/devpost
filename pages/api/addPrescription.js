@@ -22,7 +22,6 @@ export default async function handler(req, res) {
     await foundMessage.save();
     res.status(201).json("Prescription added for user");
   } catch (error) {
-    console.log(error);
     if (error.status) {
       return res.status(error.status).json(error.message);
     } else {

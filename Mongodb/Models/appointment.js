@@ -20,17 +20,19 @@ const appointmentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "awaiting",
+      default: "Awaiting",
     },
     approvedDate: String,
 
-    scheduledWith: String,
+    scheduledWith: Schema.Types.ObjectId,
 
     user: Schema.Types.ObjectId,
 
-    did: String,
-
     testType: String,
+
+    attendantDid: String,
+
+    userDid: String,
   },
   { timestamps: true }
 );

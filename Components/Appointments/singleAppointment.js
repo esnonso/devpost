@@ -2,36 +2,106 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Container from "../Containers/container";
+import { Web5 } from "@web5/api";
 import { PTags } from "../Text";
 import Button from "../Button";
 import classes from "./index.module.css";
-import axios, { all } from "axios";
+import axios from "axios";
 import Loader from "../Loader";
+import { appointmentProtocolDefinition } from "@/Web5/protocol";
 
-export default function SingleAppointment({ appts }) {
+export default function SingleAppointment({ id }) {
   const router = useRouter();
   const { status } = useSession();
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [role, setRole] = useState("");
+  const [staffName, setStaffName] = useState("");
   const [date, setDate] = useState("");
+  const [appts, setAppts] = useState("");
+  const [webFive, setWebFive] = useState(null);
+  const [attendantDid, setAttendantDid] = useState("");
   const [datePicker, showDatePicker] = useState(true);
+  const [web5approvedDate, setWeb5approvedDate] = useState("");
 
-  const getUserRoleHandler = async () => {
+  const fetchApprovedDateWeb5Doctor = async () => {
     try {
-      const userData = await axios.post("/api/getUser");
-      setRole(userData.data.user.role);
+      const { web5 } = await Web5.connect();
+      const response = await web5.dwn.records.query({
+        message: {
+          filter: {
+            protocol: "http://esnonso.com/book-appointment-protocol",
+          },
+        },
+      });
+      if (response.status.code === 200) {
+        const approvedDate = await Promise.all(
+          response.records.map(async (record) => {
+            const data = await record.data.json();
+            return data;
+          })
+        );
+        setWeb5approvedDate(approvedDate[0].approvedDate);
+      } else {
+        throw new Error("An error occured loading this page");
+      }
     } catch (error) {
-      setError("An error occured");
       return error;
     }
   };
 
-  const setUpPageHandler = async () => {
+  const fetchApprovedDateWeb5Patient = async (attendantDid) => {
+    try {
+      const { web5 } = await Web5.connect();
+      const response = await web5.dwn.records.query({
+        from: attendantDid,
+        message: {
+          filter: {
+            protocol: "http://esnonso.com/book-appointment-protocol",
+            schema: "http://esnonso.com/book-appointment-schema",
+          },
+        },
+      });
+      if (response.status.code === 200) {
+        const approvedDate = await Promise.all(
+          response.records.map(async (record) => {
+            const data = await record.data.json();
+            return data;
+          })
+        );
+        setWeb5approvedDate(approvedDate[0].approvedDate);
+      } else {
+        throw new Error("An error occured loading this page");
+      }
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const loadAppointmentHandler = async () => {
     try {
       setIsLoading(true);
       if (status === "authenticated") {
-        await getUserRoleHandler();
+        const userData = await axios.post("/api/getUser");
+        setRole(userData.data.user.role);
+        if (
+          userData.data.user.role === "Doctor" ||
+          userData.data.user.role === "Lab Guy"
+        ) {
+          const { web5, did } = await Web5.connect();
+          setWebFive(web5);
+          setStaffName(userData.data.user.name);
+        }
+      }
+      const response = await axios.post("/api/singleAppointment", { id });
+      setAppts(response.data);
+      if (
+        response.data.status !== "Awaiting" &&
+        response.data.identifier === "Web5"
+      ) {
+        setAttendantDid(response.data.attendantDid);
+        if (role === "Doctor") fetchApprovedDateWeb5Doctor();
+        else fetchApprovedDateWeb5Patient(response.data.attendantDid);
       }
     } catch (error) {
       setError("An error occured");
@@ -40,25 +110,85 @@ export default function SingleAppointment({ appts }) {
     }
   };
 
+  useEffect(() => {
+    loadAppointmentHandler();
+  }, [status]);
+
+  const createChatProtocolHandler = async () => {
+    try {
+      const { protocols: existingProtocol, status: existingProtocolStatus } =
+        await webFive.dwn.protocols.query({
+          message: {
+            filter: {
+              protocol: "http://esnonso.com/book-appointment-protocol",
+            },
+          },
+        });
+      if (
+        existingProtocolStatus.code !== 200 ||
+        existingProtocol.length === 0
+      ) {
+        const { protocol, status } = await webFive.dwn.protocols.configure({
+          message: {
+            definition: appointmentProtocolDefinition,
+          },
+        });
+        await protocol.send(did);
+      } else {
+        return;
+      }
+    } catch (error) {
+      return error;
+    }
+  };
+
   const approveAppointmentRequests = async (e) => {
     try {
       setIsLoading(true);
-      await axios.post("/api/approveAppointment", {
-        apptId: appts.id,
-        date: new Date(date).toUTCString(),
-        apptType: appts.apptType,
-      });
+      if (date === "") throw new Error("Date is required");
+      let data;
+      if (appts.identifier === "UserId") {
+        data = await axios.post("/api/approveAppointment", {
+          apptId: id,
+          date: new Date(date).toUTCString(),
+          apptType: appts.apptType,
+        });
+      }
+      //APPROVAL FOR FOR WEB5 USERS
+      if (appts.identifier === "Web5") {
+        data = await axios.post("/api/approveAppointment", {
+          apptId: id,
+          apptType: appts.apptType,
+          attendantDid,
+        });
+        await createChatProtocolHandler();
+        const recipientDid = appts.userDid;
+
+        const appointment = {
+          apptId: id,
+          approvedDate: date,
+          author: `Dr ${staffName}`,
+        };
+        const { record } = await webFive.dwn.records.write({
+          data: appointment,
+          message: {
+            protocol: "http://esnonso.com/book-appointment-protocol",
+            protocolPath: "appointment",
+            schema: "http://esnonso.com/book-appointment-schema",
+            recipient: recipientDid,
+          },
+        });
+        await record.send(recipientDid);
+      }
+      setAppts(data.data);
       window.location.reload();
     } catch (error) {
+      console.log(error);
       setError("An error occured");
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    setUpPageHandler();
-  }, [status]);
 
   return (
     <Container
@@ -103,23 +233,30 @@ export default function SingleAppointment({ appts }) {
       </PTags>
       <PTags fontWeight="600" margin="0 0 2rem 0">
         Status:{" "}
-        <span style={{ color: appts.status === "awaiting" ? "red" : "green" }}>
-          {appts.status.toUpperCase()}
+        <span style={{ color: appts.status === "Awaiting" ? "red" : "green" }}>
+          {appts.status}
         </span>
       </PTags>
 
       <PTags margin="0 0 2rem 0">
         <b>Created: </b>
-        {appts.created}
+        {new Date(appts.createdAt).toUTCString()}
       </PTags>
 
       <PTags margin="0 0 2rem 0">
         <b>Proposed Date: </b>
-        {appts.proposedDate}
+        {new Date(appts.proposedDate).toUTCString()}
       </PTags>
       <PTags margin="0 0 2rem 0">
         <b>Approved Date: </b>
-        {appts.approvedDate}
+        {appts &&
+          appts.identifier === "UserId" &&
+          appts.status === "Approved" &&
+          new Date(appts.approvedDate).toUTCString()}
+        {appts &&
+          appts.identifier === "Web5" &&
+          appts.status === "Approved" &&
+          new Date(web5approvedDate).toUTCString()}
       </PTags>
       {role === "Doctor" || role === "Lab Guy" ? (
         <>
@@ -151,12 +288,14 @@ export default function SingleAppointment({ appts }) {
             </Container>
           )}
 
-          <button
-            className={classes["btn"]}
-            onClick={approveAppointmentRequests}
-          >
-            {appts.status === "awaiting" ? "Approve" : "Re-schedule"}
-          </button>
+          {appts.status === "Awaiting" && (
+            <button
+              className={classes["btn"]}
+              onClick={approveAppointmentRequests}
+            >
+              Approve
+            </button>
+          )}
         </>
       ) : (
         ""

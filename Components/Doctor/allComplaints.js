@@ -5,8 +5,6 @@ import { PTags } from "../Text";
 import { useParams } from "next/navigation";
 
 export default function PatientsComplaints(props) {
-  const params = useParams();
-
   const router = useRouter();
 
   return (
