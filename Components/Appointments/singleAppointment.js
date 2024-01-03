@@ -51,6 +51,7 @@ export default function SingleAppointment({ id }) {
   };
 
   const fetchApprovedDateWeb5Patient = async (attendantDid) => {
+    alert(attendantDid);
     try {
       const { web5 } = await Web5.connect();
       const response = await web5.dwn.records.query({
