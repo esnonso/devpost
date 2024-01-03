@@ -72,6 +72,7 @@ export default function Complaints({ id }) {
             return data;
           })
         );
+        console.log("sent", sentChats);
         return sentChats;
       } else {
         return "error", response.status;
@@ -100,7 +101,7 @@ export default function Complaints({ id }) {
             return data;
           })
         );
-        console.log(receivedMessages);
+        console.log("received", receivedMessages);
         return receivedMessages;
       } else {
         console.log("error", response.status);
