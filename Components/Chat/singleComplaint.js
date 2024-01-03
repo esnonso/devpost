@@ -194,6 +194,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
             recipient: doctorDid,
           },
         });
+        console.log(doctorDid);
         await record.send(doctorDid);
         setUpPageHandler();
       }

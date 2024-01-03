@@ -205,6 +205,7 @@ export default function Complaints({ id }) {
           },
         });
         await record.send(patientDid);
+        console.log(patientDid);
         setReply("");
         arrangeRepliesForThisComplaintHandler();
       }
