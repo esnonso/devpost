@@ -101,6 +101,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
             return data;
           })
         );
+        console.log(sentChats);
         return sentChats;
       } else {
         throw new Error("An error occured loading this page");
