@@ -101,36 +101,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
             return data;
           })
         );
-        console.log(sentChats);
         return sentChats;
-      } else {
-        throw new Error("An error occured loading this page");
-      }
-    } catch (error) {
-      setError("An error occured");
-    }
-  };
-
-  const fetchDoctorsMessagesHandler = async (web5, did) => {
-    try {
-      const response = await web5.dwn.records.query({
-        from: did,
-        message: {
-          filter: {
-            protocol: "http://esnonso.com/chat-with-doc-protocol",
-            schema: "http://esnonso.com/chat-with-doctor-schema",
-          },
-        },
-      });
-
-      if (response.status.code === 200) {
-        const receivedMessages = await Promise.all(
-          response.records.map(async (record) => {
-            const data = await record.data.json();
-            return data;
-          })
-        );
-        return receivedMessages;
       } else {
         throw new Error("An error occured loading this page");
       }
@@ -146,13 +117,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
       if (m.data.identifier === "Web5" && m.data.status !== "Awaiting") {
         await createChatProtocolHandler(m.webFive, m.did);
         const allSent = await fetchPatientMessagesHandler(m.webFive);
-        const sent = allSent.filter((r) => r.complaintId === id);
-        const allReceived = await fetchDoctorsMessagesHandler(
-          m.webFive,
-          m.docD
-        );
-        const received = allReceived.filter((r) => r.complaintId === id);
-        const replies = sent.concat(received);
+        const replies = allSent.filter((r) => r.complaintId === id);
         setReplies(replies);
       }
     } catch (error) {

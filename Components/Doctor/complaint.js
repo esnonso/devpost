@@ -72,7 +72,6 @@ export default function Complaints({ id }) {
             return data;
           })
         );
-        console.log("sent", sentChats);
         return sentChats;
       } else {
         return "error", response.status;
@@ -82,34 +81,34 @@ export default function Complaints({ id }) {
     }
   };
 
-  const fetchPatientMessagesHandler = async (web5, did) => {
-    try {
-      const response = await web5.dwn.records.query({
-        from: did,
-        message: {
-          filter: {
-            protocol: "http://esnonso.com/chat-with-doc-protocol",
-            schema: "http://esnonso.com/chat-with-doctor-schema",
-          },
-        },
-      });
+  // const fetchPatientMessagesHandler = async (web5, did) => {
+  //   try {
+  //     const response = await web5.dwn.records.query({
+  //       from: did,
+  //       message: {
+  //         filter: {
+  //           protocol: "http://esnonso.com/chat-with-doc-protocol",
+  //           schema: "http://esnonso.com/chat-with-doctor-schema",
+  //         },
+  //       },
+  //     });
 
-      if (response.status.code === 200) {
-        const receivedMessages = await Promise.all(
-          response.records.map(async (record) => {
-            const data = await record.data.json();
-            return data;
-          })
-        );
-        console.log("received", receivedMessages);
-        return receivedMessages;
-      } else {
-        console.log("error", response.status);
-      }
-    } catch (error) {
-      setError("An error occured");
-    }
-  };
+  //     if (response.status.code === 200) {
+  //       const receivedMessages = await Promise.all(
+  //         response.records.map(async (record) => {
+  //           const data = await record.data.json();
+  //           return data;
+  //         })
+  //       );
+  //       console.log("received", receivedMessages);
+  //       return receivedMessages;
+  //     } else {
+  //       console.log("error", response.status);
+  //     }
+  //   } catch (error) {
+  //     setError("An error occured");
+  //   }
+  // };
 
   const arrangeRepliesForThisComplaintHandler = async () => {
     try {
@@ -117,17 +116,16 @@ export default function Complaints({ id }) {
       const m = await getMessageDetails();
       if (m.data.identifier === "Web5" && m.data.status !== "Awaiting") {
         const allSent = await fetchDoctorsMessagesHandler(m.webFive);
-        const sent = allSent.filter((r) => r.complaintId === id);
-        const allReceived = await fetchPatientMessagesHandler(
-          m.webFive,
-          m.patDid
-        );
-        const received = allReceived.filter((r) => r.complaintId === id);
-        const replies = sent.concat(received);
+        const replies = allSent.filter((r) => r.complaintId === id);
+        // const allReceived = await fetchPatientMessagesHandler(
+        //   m.webFive,
+        //   m.patDid
+        // );
+        // const received = allReceived.filter((r) => r.complaintId === id);
         setReplies(replies);
       }
     } catch (err) {
-      console.log(err);
+      setError("An error occured");
     } finally {
       setIsLoading(false);
     }
