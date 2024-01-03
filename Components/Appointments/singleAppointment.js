@@ -90,6 +90,7 @@ export default function SingleAppointment({ id }) {
           userData.data.user.role === "Lab Guy"
         ) {
           const { web5, did } = await Web5.connect();
+          setAttendantDid(did);
           setWebFive(web5);
           setStaffName(userData.data.user.name);
         }
