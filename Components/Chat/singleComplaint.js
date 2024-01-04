@@ -110,6 +110,34 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
     }
   };
 
+  const fetchDoctorsMessagesHandler = async (web5, did) => {
+    try {
+      const response = await web5.dwn.records.query({
+        from: did,
+        message: {
+          filter: {
+            protocol: "http://esnonso.com/chat-with-doc-protocol",
+            schema: "http://esnonso.com/chat-with-doctor-schema",
+          },
+        },
+      });
+
+      if (response.status.code === 200) {
+        const receivedMessages = await Promise.all(
+          response.records.map(async (record) => {
+            const data = await record.data.json();
+            return data;
+          })
+        );
+        return receivedMessages;
+      } else {
+        throw new Error("An error occured loading this page");
+      }
+    } catch (error) {
+      setError("An error occured");
+    }
+  };
+
   const setUpPageHandler = async () => {
     try {
       setIsLoading(true);
@@ -117,11 +145,23 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
       if (m.data.identifier === "Web5" && m.data.status !== "Awaiting") {
         await createChatProtocolHandler(m.webFive, m.did);
         const allSent = await fetchPatientMessagesHandler(m.webFive);
-        const replies = allSent.filter((r) => r.complaintId === id);
-        setReplies(replies);
+        const sent = allSent.filter((r) => r.complaintId === id);
+        const allReceived = await fetchDoctorsMessagesHandler(
+          m.webFive,
+          m.docD
+        );
+        const received = allReceived.filter((r) => r.complaintId === id);
+        const replies = sent.concat(received);
+        const removeDuplicates = replies.filter(
+          (value, index, self) =>
+            index ===
+            self.findIndex(
+              (c) => c.message === value.message && c.time === value.time
+            )
+        );
+        setReplies(removeDuplicates);
       }
     } catch (error) {
-      console.log(error);
       if (error.response) setError(error.response.data);
       else setError("An error occured!");
     } finally {
@@ -173,7 +213,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
         setReplies(res.data.replies);
       }
     } catch (error) {
-      console.log(error);
+      setError(error.message || "An error occured");
     } finally {
       setIsLoading(false);
     }

@@ -97,7 +97,7 @@ export default function AppointmentForm() {
 
   return (
     <Container margin="5rem 1rem 0 1rem" flex="column">
-      {loading && <Loader />}
+      {loading && <Loader message="Setting up" />}
       <form className={classes["chat-container"]} onSubmit={submitHandler}>
         <PTags fontSize="25px" textAlign="center" margin="0 0 1rem 0">
           Book Appointment

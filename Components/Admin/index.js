@@ -28,7 +28,7 @@ export default function AdministaratorDashboard(props) {
       </PTags>
       <Container justify="flex-end">
         <Button
-          text="Add staff"
+          text="+new user"
           color="white"
           back="#139D69"
           width="7rem"
@@ -38,7 +38,7 @@ export default function AdministaratorDashboard(props) {
           borderRadius={"5px"}
         />
         <Button
-          text="Add Pill"
+          text="+new pill"
           color="white"
           back="#139D69"
           width="7rem"
