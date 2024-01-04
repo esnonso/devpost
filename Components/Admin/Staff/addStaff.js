@@ -30,7 +30,12 @@ export default function AddStaff(props) {
       await axios.post("/api/addStaff", {
         data: { firstname, lastname, email, role, password },
       });
-      //window.location.reload();
+      setMessage("Staff Added!");
+      setLastname("");
+      setFirstname("");
+      setEmail("");
+      setPassword("");
+      setRole("");
     } catch (error) {
       if (error.response) setError(error.response.data);
       else setError("An error occured!");

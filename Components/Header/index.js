@@ -16,7 +16,7 @@ const links = [
   { caption: "Chat with a doctor", url: "/chat/new" },
   { caption: "Book appointment", url: "/appointments/new" },
   { caption: "Subscribe to health care", url: "/subscribe/new" },
-  { caption: "About", url: "/about" },
+  { caption: "Dashboard", url: "/admin/dashboard" },
 ];
 
 export default function Header(props) {
