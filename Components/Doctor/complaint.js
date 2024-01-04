@@ -110,6 +110,16 @@ export default function Complaints({ id }) {
     }
   };
 
+  function compare(a, b) {
+    if (a.time < b.time) {
+      return -1;
+    }
+    if (a.time > b.time) {
+      return 1;
+    }
+    return 0;
+  }
+
   const arrangeRepliesForThisComplaintHandler = async () => {
     try {
       setIsLoading(true);
@@ -130,7 +140,8 @@ export default function Complaints({ id }) {
               (c) => c.message === value.message && c.time === value.time
             )
         );
-        setReplies(removeDuplicates);
+        const allReplies = await removeDuplicates.sort(compare);
+        setReplies(allReplies);
       }
     } catch (err) {
       setError(err.message || "An error occured");

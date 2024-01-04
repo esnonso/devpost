@@ -138,6 +138,16 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
     }
   };
 
+  function compare(a, b) {
+    if (a.time < b.time) {
+      return -1;
+    }
+    if (a.time > b.time) {
+      return 1;
+    }
+    return 0;
+  }
+
   const setUpPageHandler = async () => {
     try {
       setIsLoading(true);
@@ -159,7 +169,8 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
               (c) => c.message === value.message && c.time === value.time
             )
         );
-        setReplies(removeDuplicates);
+        const allReplies = await removeDuplicates.sort(compare);
+        setReplies(allReplies);
       }
     } catch (error) {
       if (error.response) setError(error.response.data);
