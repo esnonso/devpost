@@ -33,12 +33,12 @@ export default function Homepage() {
       </div>
       {/* CHAT WITH A DOCTOR */}
       <PTags
-        margin="10rem 0.5rem 0 0.5rem"
+        margin="10rem 0.5rem 1rem 0.5rem"
         fontSize="22px"
         textAlign="center"
         fontWeight="600"
       >
-        Need your medication devlivered to you?
+        Chat with Doctor
       </PTags>
       <div className={classes["call-a-doc"]}>
         <div className={classes["call-a-doc-img"]}>
@@ -51,7 +51,7 @@ export default function Homepage() {
             justify="center"
             padding="0 0 0 1rem"
           >
-            <PTags textAlign="left" margin="0.5rem 0">
+            <PTags textAlign="left" margin="0 0 1rem 0">
               Chat with a doctor to avoid the risk of facing a higher illness.
               Health is wealth
             </PTags>
@@ -69,25 +69,33 @@ export default function Homepage() {
           </Container>
         </div>
         <div className={classes.text}>
-          <PTags textAlign="left" margin="2rem 0">
-            <span className={classes["star"]}>★</span> Sickness can have severe
-            and mild symptoms and they make us unable to live our lives.
-            <br />
-            <span className={classes["star"]}>★</span> Chat with a doctor and
-            get the best treatment, advice or solution to whatever symptoms you
-            are experiencing for free.
-            <br />
-            <span className={classes["star"]}>★</span> Get your medication
-            delivered to your desired location or book an appointment for a test
-            if necessary.
-            <br />
-            <span className={classes["star"]}>★</span>Become well again.
-          </PTags>
+          <Container textAlign="left" margin="1rem 0 0 0" flex="column">
+            <Container align="center" margin="0 0 0.7rem 0">
+              <span className={classes["star"]}>★</span> Sickness can have
+              severe and mild symptoms and they make us unable to live our
+              lives.
+            </Container>
+            <Container align="center" margin="0 0 0.7rem 0">
+              <span className={classes["star"]}>★</span> Chat with a doctor and
+              get the best treatment, advice or solution to whatever symptoms
+              you are experiencing for free.
+            </Container>
+
+            <Container align="center" margin="0 0 0.7rem 0">
+              <span className={classes["star"]}>★</span> Get your medication
+              delivered to your desired location or book an appointment for a
+              test if necessary.
+            </Container>
+
+            <Container align="center">
+              <span className={classes["star"]}>★</span>Become well again.
+            </Container>
+          </Container>
         </div>
       </div>
       {/* BOOK AN APPOINTMENT */}
       <PTags
-        margin="10rem 0.5rem 0 0.5rem"
+        margin="7rem 0.5rem 1rem 0.5rem"
         fontSize="22px"
         textAlign="center"
         fontWeight="600"
@@ -105,7 +113,7 @@ export default function Homepage() {
             justify="center"
             padding="0 1rem"
           >
-            <PTags textAlign="left" margin="0.5rem 0">
+            <PTags textAlign="left" margin="0 0 1rem 0">
               Schedule an appointment and let us get everything ready for you
             </PTags>
             <Button
@@ -122,21 +130,25 @@ export default function Homepage() {
           </Container>
         </div>
         <div className={classes.text}>
-          <PTags textAlign="left" margin="2rem 0">
-            <span className={classes["star"]}>★</span> Schedule an appointment
-            for a test or to see a doctor.
-            <br />
-            <span className={classes["star"]}>★</span> We get everything ready
-            in advance for you.
-            <br />
-            <span className={classes["star"]}>★</span> Skip the queue and get
-            your appointment done as quick as possible.
-          </PTags>
+          <Container textAlign="left" margin="1rem 0 0 0" flex="column">
+            <Container align="center" margin="0 0 0.7rem 0">
+              <span className={classes["star"]}>★</span> Schedule an appointment
+              for a test or to see a doctor.
+            </Container>
+            <Container align="center" margin="0 0 0.7rem 0">
+              <span className={classes["star"]}>★</span> We get everything ready
+              in advance for you.
+            </Container>
+            <Container align="center">
+              <span className={classes["star"]}>★</span> Skip the queue and get
+              your appointment done as quick as possible.
+            </Container>
+          </Container>
         </div>
       </div>
       {/* SUBSCRIBE TO HEALTH CARE */}
       <PTags
-        margin="10rem 0.5rem 0 0.5rem"
+        margin="7rem 0.5rem 1rem 0.5rem"
         fontSize="22px"
         textAlign="center"
         fontWeight="600"
@@ -155,7 +167,7 @@ export default function Homepage() {
             justify="center"
             padding="0 1rem 0 1rem"
           >
-            <PTags textAlign="left" margin="0.5rem 0">
+            <PTags textAlign="left" margin="0 0 1rem 0">
               Subscribe to our health package for as low as #10,000 monthly and
               let us monitor your health
             </PTags>
@@ -173,19 +185,24 @@ export default function Homepage() {
           </Container>
         </div>
         <div className={classes.text}>
-          <PTags textAlign="left" margin="2rem 0">
-            <span className={classes["star"]}>★</span> Get our emergency service
-            to your location with the click of a button
-            <br />
-            <span className={classes["star"]}>★</span> Get regular health
-            updates and recommendations based on your health history.
-            <br />
-            <span className={classes["star"]}>★</span>Book appointments and get
-            a doctor sent to your location.
-            <br />
-            <span className={classes["star"]}>★</span>Get discounts on pills and
-            tests.
-          </PTags>
+          <Container textAlign="left" margin="1rem 0 0 0" flex="column">
+            <Container align="center" margin="0 0 0.7rem 0">
+              <span className={classes["star"]}>★</span> Get our emergency
+              service to your location with the click of a button
+            </Container>
+            <Container align="center" margin="0 0 0.7rem 0">
+              <span className={classes["star"]}>★</span> Get regular health
+              updates and recommendations based on your health history.
+            </Container>
+            <Container align="center" margin="0 0 0.7rem 0">
+              <span className={classes["star"]}>★</span>Book appointments and
+              get a doctor sent to your location.
+            </Container>
+            <Container align="center" margin="0 0 0.7rem 0">
+              <span className={classes["star"]}>★</span>Get discounts on pills
+              and tests.
+            </Container>
+          </Container>
         </div>
       </div>
     </Container>

@@ -48,7 +48,7 @@ const Footer = () => {
           </PTags>
           <PTags textAlign="left" margin="0 0 0.3rem 0">
             <Link href="/subscribe/new" className={classes["link"]}>
-              Subscribe for health care
+              Subscribe to health care
             </Link>
           </PTags>
         </div>
