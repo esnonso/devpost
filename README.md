@@ -1,40 +1,32 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+## Introduction
 
-First, run the development server:
+This project is **Hospital solution**. It is a role based and built with [Nextjs].it is a platform where people can chat with a doctor and get prescriptions which they can from the hospital and get it delivered to their home, book an appointment with a doctor or for a lab test and get a date scheduled ahead and more for **subscribed\* **users\*\*. The application uses Web5 technology and gives users the choice to own their data or subscribe and give the hospital permission to hold their data and records.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The roles are divided into 3 major categories;
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **An unsubscribed user** who would not be registered. This user can raise a complain providing their gender and age range so the best doctor, based on age and gender gets matched to them. This user's did:ion will serve as the unique identifier for the message. A doctor will attend to this complain and engage this user in a chat using **Web5 Technology** by writing to their \*_dwns_. After the chat the doctor will add a prescription to the message for the user and the user can checkout get the pills delivered to the address provided by them. This user can also book appointments and get an approved date written to their dwns.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+2. **A subscribed user** who will be registered whose full details, chat history and medical records will be saved to the hospital database. This user will perform all functions done by the web5 user and more based on the hospital's recommendation. All data will be saved to the hospital database.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+3. **Staff of the hospital**
+   i. An administrator to add, delete and edit staff and pills.
+   ii. A doctor to attend to complaints, chat with patients and recommend pills for the patient. The doctor also attend to appointments from patients.
+   iii. A lab attendant to attend to patients who want to schedule a lab test appointment.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## GETTING STARTED
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+run `npm install` to install all packages.
 
-## Learn More
+`create env file and provide`
 
-To learn more about Next.js, take a look at the following resources:
+# NEXTAUTH_SECRET=`yoursecret`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# MONGO_URI= `your mongodb connection string`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+# NEXTAUTT_URL=`your production url` --ignore if running on development---
 
-## Deploy on Vercel
+run `npm run dev` to run the server and visit [App](http://localhost:3000)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+You can find a sample of this project running on [Devpost-Hospital](https://devpost-eight.vercel.app)
