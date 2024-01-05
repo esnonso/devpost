@@ -1,36 +1,38 @@
 import Head from "next/head";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import PatientsComplaints from "@/Components/Doctor/allComplaints";
-import { connectDatabase } from "@/Mongodb";
-import Message from "@/Mongodb/Models/message";
+import Loader from "@/Components/Loader";
+import axios from "axios";
 
 export default function AllPatientsComplaints(props) {
+  const [messages, setMessages] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchMessagesHandler = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get("/api/getDoctorMessages");
+      setMessages(response.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMessagesHandler();
+  }, []);
+
   return (
     <Fragment>
       <Head>
-        <title>Devpost web5 Book Appointment</title>
+        <title>Doctor panel</title>
         <meta name="description" content="Doctor" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <PatientsComplaints messages={props.messages} />
+      <PatientsComplaints messages={messages} />
+      {isLoading && <Loader message="Loading messages" />}
     </Fragment>
   );
-}
-
-export async function getStaticProps() {
-  await connectDatabase();
-  const data = await Message.find({ status: "Awaiting" });
-  return {
-    props: {
-      messages: data.map((m) => ({
-        title: m.title,
-        gender: m.gender,
-        ageRange: m.ageRange,
-        created: m.createdAt.toUTCString(),
-        id: m._id.toString(),
-        identifier: m.identifier,
-      })),
-    },
-    revalidate: 1,
-  };
 }

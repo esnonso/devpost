@@ -300,7 +300,11 @@ export default function Complaints({ id }) {
       {prescription && (
         <Prescription onHide={hidePrescriptionHandler} messageId={id} />
       )}
+
       <PTags fontWeight="600" margin="0 0 0.5rem 0">
+        {complaint.identifier === "UserId" && (
+          <span style={{ color: "#139d69", fontSize: "20px" }}>★ </span>
+        )}
         Title: {complaint.title}
       </PTags>
       <PTags fontWeight="600" margin="0 0 0.5rem 0">
@@ -338,9 +342,7 @@ export default function Complaints({ id }) {
               {r.author}: {r.message}
             </PTags>
             <Container>
-              <small>
-                <b>Time:</b> {r.time}
-              </small>
+              <small>{new Date(r.time).toUTCString()}</small>
             </Container>
           </Container>
         ))}
@@ -360,7 +362,7 @@ export default function Complaints({ id }) {
         Send
       </button>
 
-      {loading && <Loader message={"Loading conversation"} />}
+      {loading && <Loader message={"Loading..."} />}
     </Container>
   );
 }

@@ -8,7 +8,7 @@ import { throwError } from "@/Components/Error/errorFunction";
 export default async function handler(req, res) {
   try {
     await connectDatabase();
-    const { apptId, date, apptType, attendantDid } = req.body;
+    const { apptId, date, apptType, attendantDid, status } = req.body;
     // if (!date) throwError("Select a valid Date", 403);
     const session = await getServerSession(req, res, options);
     if (!session) throwError("User not authenticated", 403);
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       throwError("You can only approve tests", 403);
 
     const foundAppt = await Appointment.findById(apptId);
-    foundAppt.status = "Approved";
+    foundAppt.status = status;
     foundAppt.approvedDate = date || "";
     foundAppt.scheduledWith = foundDoctor._id;
     if (foundAppt.identifier === "Web5") foundAppt.attendantDid = attendantDid;

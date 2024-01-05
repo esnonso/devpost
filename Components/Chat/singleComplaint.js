@@ -350,7 +350,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
       {prescription && (
         <UserPrescription messageId={id} onHide={hidePrescriptionHandler} />
       )}
-      {loading && <Loader />}
+      {loading && <Loader message="Loading..." />}
     </Container>
   );
 }

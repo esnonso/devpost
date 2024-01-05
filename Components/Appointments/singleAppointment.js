@@ -41,6 +41,7 @@ export default function SingleAppointment({ id }) {
             return data;
           })
         );
+
         setWeb5approvedDate(approvedDate[0].approvedDate);
       } else {
         throw new Error("An error occured loading this page");
@@ -81,8 +82,10 @@ export default function SingleAppointment({ id }) {
   const loadAppointmentHandler = async () => {
     try {
       setIsLoading(true);
+      let roles;
       if (status === "authenticated") {
         const userData = await axios.post("/api/getUser");
+        roles = userData.data.user.role;
         setRole(userData.data.user.role);
         if (
           userData.data.user.role === "Doctor" ||
@@ -101,8 +104,10 @@ export default function SingleAppointment({ id }) {
         response.data.identifier === "Web5"
       ) {
         setAttendantDid(response.data.attendantDid);
-        if (role === "Doctor") fetchApprovedDateWeb5Doctor();
-        else fetchApprovedDateWeb5Patient(response.data.attendantDid);
+        if (roles === "Doctor" || roles === "Lab Guy")
+          fetchApprovedDateWeb5Doctor();
+        if (roles !== "Doctor" && roles === "Lab Guy")
+          fetchApprovedDateWeb5Patient(response.data.attendantDid);
       }
     } catch (error) {
       setError("An error occured");
@@ -149,18 +154,20 @@ export default function SingleAppointment({ id }) {
       if (date === "") throw new Error("Date is required");
       let data;
       if (appts.identifier === "UserId") {
-        data = await axios.post("/api/approveAppointment", {
+        data = await axios.post("/api/changeAppointmentStatus", {
           apptId: id,
           date: new Date(date).toUTCString(),
           apptType: appts.apptType,
+          status: "Approved",
         });
       }
       //APPROVAL FOR FOR WEB5 USERS
       if (appts.identifier === "Web5") {
-        data = await axios.post("/api/approveAppointment", {
+        data = await axios.post("/api/changeAppointmentStatus", {
           apptId: id,
           apptType: appts.apptType,
           attendantDid,
+          status: "Approved",
         });
         await createChatProtocolHandler();
         const recipientDid = appts.userDid;
@@ -191,6 +198,23 @@ export default function SingleAppointment({ id }) {
     }
   };
 
+  const markAppointmentAsCompletedHandler = async () => {
+    try {
+      setIsLoading(true);
+      const data = await axios.post("/api/changeAppointmentStatus", {
+        apptId: id,
+        apptType: appts.apptType,
+        status: "Completed",
+        attendantDid,
+      });
+      setAppts(data.data);
+    } catch {
+      setError("An error occured");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Container
       margin="5rem auto 0 auto"
@@ -203,16 +227,7 @@ export default function SingleAppointment({ id }) {
     >
       {role === "Doctor" && (
         <Container margin="0 0 2rem 0">
-          <Button
-            text="View Appointment history"
-            width="fit-content"
-            back={"#139d69"}
-            padding={"0.3rem 2rem"}
-            color="white"
-            border={"none"}
-            margin="0.2rem"
-            click={() => router.push(`/`)}
-          />
+          <PTags fontSize="20px">Appointment Tag</PTags>
         </Container>
       )}
       {error && (
@@ -262,21 +277,26 @@ export default function SingleAppointment({ id }) {
       {role === "Doctor" || role === "Lab Guy" ? (
         <>
           <Container margin="0 0 0.5rem 0">
-            <input
-              type="checkbox"
-              onChange={(e) => {
-                if (e.target.checked) {
-                  showDatePicker(false);
-                  setDate(appts.proposedDate);
-                } else {
-                  showDatePicker(true);
-                  setDate("");
-                }
-              }}
-            />{" "}
-            Use proposed Date?
+            {appts.status === "Awaiting" && (
+              <>
+                {" "}
+                <input
+                  type="checkbox"
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      showDatePicker(false);
+                      setDate(appts.proposedDate);
+                    } else {
+                      showDatePicker(true);
+                      setDate("");
+                    }
+                  }}
+                />{" "}
+                Use proposed Date?
+              </>
+            )}
           </Container>
-          {datePicker && (
+          {appts.status === "Awaiting" && datePicker && (
             <Container>
               <input
                 type="datetime-local"
@@ -295,6 +315,15 @@ export default function SingleAppointment({ id }) {
               onClick={approveAppointmentRequests}
             >
               Approve
+            </button>
+          )}
+
+          {appts.status === "Approved" && (
+            <button
+              className={classes["btn"]}
+              onClick={markAppointmentAsCompletedHandler}
+            >
+              Mark as completed
             </button>
           )}
         </>

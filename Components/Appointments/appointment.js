@@ -60,10 +60,12 @@ export default function Appointments() {
           <small>{error}</small>
         </Container>
       )}
-      <PTags fontSize="25px" borderBottom="1px gray solid" margin="0.5rem">
-        All appointments for this user
+      <PTags fontSize="20px" borderBottom="1px gray solid" margin="0.5rem">
+        Your Appointments
       </PTags>
-
+      {appointments.length < 1 && (
+        <small style={{ textAlign: "center" }}>You have no messages</small>
+      )}
       {appointments.map((c) => {
         return (
           <Container
@@ -72,15 +74,19 @@ export default function Appointments() {
             borderBottom="1px gray solid"
             align="center"
           >
-            <PTags width="20%" margin="0.5rem">
+            <PTags width="30%" margin="0.5rem">
               {c.apptType} {c.testType && <span>for {c.testType}</span>}
             </PTags>
 
-            <PTags width="30%" margin="0.5rem">
-              Status: {c.status}
+            <PTags width="20%" margin="0.5rem">
+              <span
+                style={{ color: c.status === "Awaiting" ? "red" : "green" }}
+              >
+                {c.status}
+              </span>
             </PTags>
             <PTags width="40%" margin="0.5rem">
-              Created: {new Date(c.createdAt).toUTCString()}
+              {new Date(c.createdAt).toUTCString()}
             </PTags>
             <Button
               text="View"

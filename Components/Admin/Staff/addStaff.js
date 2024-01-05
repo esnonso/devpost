@@ -125,7 +125,6 @@ export default function AddStaff(props) {
             <option>--Select--</option>
             <option>Administrator</option>
             <option>Doctor</option>
-            <option>Pharmacist</option>
             <option>User</option>
             <option>Lab Guy</option>
           </select>

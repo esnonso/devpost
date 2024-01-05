@@ -64,6 +64,9 @@ export default function ComplaintsPage(props) {
       <PTags fontSize="25px" borderBottom="1px gray solid" margin="0.5rem">
         Your Messages
       </PTags>
+      {messages.length < 1 && (
+        <small style={{ textAlign: "center" }}>You have no messages</small>
+      )}
       {messages.map((c) => {
         return (
           <Container
@@ -73,8 +76,19 @@ export default function ComplaintsPage(props) {
             align="center"
             justify="space-between"
           >
-            <PTags margin="0.5rem">{c.title}</PTags>
-
+            <PTags margin="0.5rem" width="35%">
+              {c.title}
+            </PTags>
+            <PTags width="20%" margin="0.5rem">
+              <span
+                style={{ color: c.status === "Awaiting" ? "red" : "green" }}
+              >
+                {c.status}
+              </span>
+            </PTags>
+            <PTags margin="0.5rem" width="35%">
+              {new Date(c.createdAt).toUTCString()}
+            </PTags>
             <Button
               text="View"
               back="#139D69"

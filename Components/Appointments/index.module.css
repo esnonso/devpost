@@ -22,7 +22,7 @@
 .btn {
     background-color: #139D69;
     color: white;
-    width: 10rem;
+    width: fit-content;
     height: 2rem;
     margin: 1rem 1rem 0 0;
     border: none;

@@ -53,7 +53,6 @@ export default function Homepage() {
           >
             <PTags textAlign="left" margin="0 0 1rem 0">
               Chat with a doctor to avoid the risk of facing a higher illness.
-              Health is wealth
             </PTags>
             <Button
               text="Chat now"

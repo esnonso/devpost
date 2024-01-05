@@ -7,3 +7,15 @@
     font: inherit;
     margin: 0.5rem 0;
 }
+
+.delete{
+    background-color: crimson;
+    color:white;
+    font:inherit;
+    border: none;
+    width: 7rem;
+}
+
+.delete:disabled{
+    background-color: gray;
+}

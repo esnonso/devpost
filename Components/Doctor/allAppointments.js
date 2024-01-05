@@ -7,7 +7,7 @@ export default function AppointmentRequests(props) {
   const router = useRouter();
   return (
     <Container margin="5rem 1rem" flex="column" minHeight="50vh">
-      <PTags fontSize="25px" borderBottom="1px gray solid" margin="0.5rem">
+      <PTags fontSize="20px" borderBottom="1px gray solid" margin="0.5rem">
         Appointment requests
       </PTags>
       {props.appointments.map((a) => {
@@ -18,19 +18,18 @@ export default function AppointmentRequests(props) {
             borderBottom="1px gray solid"
             align="center"
           >
-            {a.identifier === "UserId" && (
-              <span style={{ color: "#139d69", fontSize: "25px" }}>★</span>
-            )}
-            <PTags width="30%" margin="0.5rem">
+            <PTags width="40%" margin="0.5rem">
+              {a.identifier === "UserId" && (
+                <span style={{ color: "#139d69", fontSize: "20px" }}>★</span>
+              )}
               {a.apptType}
             </PTags>
 
-            <PTags width="20%" margin="0.5rem">
-              <b> Gender:</b> {a.gender[0]}
+            <PTags width="5%" margin="0.5rem" textAlign="center">
+              <b> {a.gender[0]}</b>
             </PTags>
 
             <PTags width="40%" margin="0.5rem">
-              <b> created: </b>
               {a.created}
             </PTags>
 
