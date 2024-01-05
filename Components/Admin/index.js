@@ -180,6 +180,7 @@ export default function AdministaratorDashboard(props) {
           );
         })}
       </Container>
+      {isLoading && <Loader />}
     </Container>
   );
 }

@@ -225,11 +225,15 @@ export default function SingleAppointment({ id }) {
       align="flex-start"
       border="3px #f5f5f5 solid"
     >
-      {role === "Doctor" && (
-        <Container margin="0 0 2rem 0">
-          <PTags fontSize="20px">Appointment Tag</PTags>
-        </Container>
-      )}
+      <Container margin="0 0 1rem 0">
+        <PTags fontSize="20px">
+          {appts.identifier === "UserId" && (
+            <span style={{ color: "#139d69", fontSize: "25px" }}>★ </span>
+          )}
+          Appointment Tag
+        </PTags>
+      </Container>
+
       {error && (
         <Container
           width="100%"
@@ -241,9 +245,7 @@ export default function SingleAppointment({ id }) {
           <small>Error: {error}</small>
         </Container>
       )}
-      {appts.identifier === "UserId" && (
-        <span style={{ color: "#139d69", fontSize: "25px" }}>★</span>
-      )}
+
       <PTags margin="0 0 2rem 0">
         <b>Type:</b> {appts.apptType}
       </PTags>
@@ -258,7 +260,10 @@ export default function SingleAppointment({ id }) {
         <b>Created: </b>
         {new Date(appts.createdAt).toUTCString()}
       </PTags>
-
+      <PTags margin="0 0 2rem 0">
+        <b>scheduledWith: </b>
+        {appts.scheduledWith && appts.scheduledWith.name}
+      </PTags>
       <PTags margin="0 0 2rem 0">
         <b>Proposed Date: </b>
         {new Date(appts.proposedDate).toUTCString()}

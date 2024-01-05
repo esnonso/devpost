@@ -23,7 +23,8 @@ export default function ComplaintsPage(props) {
           response = await axios.post("/api/getMessages", { did: did });
           setMessages(response.data.messages);
         }
-      } else {
+      }
+      if (status === "authenticated") {
         response = await axios.post("/api/getMessages");
         setMessages(response.data.messages);
       }

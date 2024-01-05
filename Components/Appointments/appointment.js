@@ -17,16 +17,20 @@ export default function Appointments() {
   const getAppointments = async () => {
     try {
       setIsLoading(true);
-      let did;
-      if (typeof window !== "undefined") {
-        did = localStorage.getItem("did");
+      let response;
+      if (status === "unauthenticated" && typeof window !== "undefined") {
+        const did = localStorage.getItem("did");
+        if (did !== null) {
+          response = await axios.post("/api/getUserAppointments", {
+            did: did,
+          });
+        }
       }
-      const response = await axios.post("/api/getAppointments", {
-        did: did,
-      });
+      if (status === "authenticated") {
+        response = await axios.post("/api/getUserAppointments");
+      }
       setAppointments(response.data);
     } catch (error) {
-      console.log(error);
       if (error.response) setError(error.response.data);
       else setError("An error occured!");
     } finally {
@@ -64,7 +68,7 @@ export default function Appointments() {
         Your Appointments
       </PTags>
       {appointments.length < 1 && (
-        <small style={{ textAlign: "center" }}>You have no messages</small>
+        <small style={{ textAlign: "center" }}>You have no appointments</small>
       )}
       {appointments.map((c) => {
         return (

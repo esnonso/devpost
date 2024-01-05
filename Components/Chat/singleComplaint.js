@@ -280,20 +280,22 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
           <small>{error}</small>
         </Container>
       )}
-      <PTags fontWeight="600" margin="0 0 0.5rem 0">
-        Title: {message.title}
+      <PTags margin="0 0 0.5rem 0">
+        <b>Title: </b> {message.title}
       </PTags>
-      <PTags fontWeight="600" margin="0 0 0.5rem 0">
-        Status:{" "}
+      <PTags margin="0 0 0.5rem 0">
+        <b> Status: </b>
         {message.status && (
           <span
             style={{
-              color:
+              backgroundColor:
                 message.status === "Awaiting"
                   ? "red"
                   : message.status === "With a doctor"
                   ? "Yellow"
                   : "green",
+              color: "white",
+              padding: "0.3rem 0.5rem",
             }}
           >
             {message.status}
@@ -301,8 +303,13 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
         )}
       </PTags>
 
-      <PTags fontWeight="600">Message:</PTags>
-      <PTags margin="0 0 2rem 0">{message.message}</PTags>
+      <PTags margin="0 0 0.5rem 0">
+        <b>Attended By: </b> {message.attendedBy && message.attendedBy.name}
+      </PTags>
+      <PTags margin="0 0 2rem 0">
+        <b>Message: </b>
+        {message.message}
+      </PTags>
 
       {/* REPLIES CODE */}
       <Container borderBottom="1px gray solid" padding="0.5rem" flex="column">

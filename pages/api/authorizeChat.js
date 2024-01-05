@@ -17,7 +17,11 @@ export default async function AuthorizeChat(req, res) {
       userId = user._id;
       role = user.role;
     }
-    const data = await Message.findById(chatId);
+    const data = await Message.findById(chatId).populate({
+      path: "attendedBy",
+      select: "name",
+      model: User,
+    });
     if (data.did !== did && !session) throwError("Unauthorized Access", 403);
     if (session && data.identifier === "UserId") {
       if (role !== "Doctor") {

@@ -8,18 +8,13 @@ export default async function handler(req, res) {
   try {
     const { did } = req.body;
     await connectDatabase();
-    let userId;
+    let data;
     const session = await getServerSession(req, res, options);
     if (session) {
       const user = await User.findOne({ email: session.user.email });
-      userId = user._id;
-    }
-    let data;
-    if (!session) {
+      data = await Appointment.find({ user: user._id });
+    } else {
       data = await Appointment.find({ userDid: did });
-    }
-    if (session) {
-      data = await Appointment.find({ user: userId });
     }
     return res.status(200).json(data);
   } catch (error) {

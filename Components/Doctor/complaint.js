@@ -301,30 +301,34 @@ export default function Complaints({ id }) {
         <Prescription onHide={hidePrescriptionHandler} messageId={id} />
       )}
 
-      <PTags fontWeight="600" margin="0 0 0.5rem 0">
+      <PTags margin="0 0 0.5rem 0">
         {complaint.identifier === "UserId" && (
           <span style={{ color: "#139d69", fontSize: "20px" }}>★ </span>
         )}
-        Title: {complaint.title}
+        <b>Title: </b> {complaint.title}
       </PTags>
-      <PTags fontWeight="600" margin="0 0 0.5rem 0">
-        Status:{" "}
+      <PTags margin="0 0 0.5rem 0">
+        <b>Status: </b>
         <span
           style={{
-            color:
+            backgroundColor:
               complaint.status === "Awaiting"
                 ? "red"
                 : complaint.status === "With a doctor"
                 ? "Yellow"
                 : "green",
+            color: "white",
+            padding: "0.3rem 0.5rem",
           }}
         >
           {complaint.status}
         </span>
       </PTags>
 
-      <PTags fontWeight="600">Message:</PTags>
-      <PTags margin="0 0 2rem 0">{complaint.message}</PTags>
+      <PTags margin="0 0 2rem 0">
+        <b>Message: </b>
+        {complaint.message}
+      </PTags>
 
       {/* REPLIES CODE */}
       <Container borderBottom="1px gray solid" padding="0.5rem">
