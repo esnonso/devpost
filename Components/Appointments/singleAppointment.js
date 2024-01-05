@@ -261,7 +261,7 @@ export default function SingleAppointment({ id }) {
         {new Date(appts.createdAt).toUTCString()}
       </PTags>
       <PTags margin="0 0 2rem 0">
-        <b>scheduledWith: </b>
+        <b>Approved By: </b>
         {appts.scheduledWith && appts.scheduledWith.name}
       </PTags>
       <PTags margin="0 0 2rem 0">

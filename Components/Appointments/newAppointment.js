@@ -148,31 +148,33 @@ export default function AppointmentForm() {
           </Container>
         )}
 
-        <Container width="100%" flex="column">
-          <label className={classes.label} htmlFor="Gender">
-            Gender:
-          </label>
-          <select
-            className={classes.input}
-            value={gender}
-            onChange={inputChangeHandler(setGender)}
-          >
-            <option>Select </option>
-            <option>Female </option>
-            <option>Male </option>
-          </select>
-        </Container>
+        <Container width="100%" justify="space-between">
+          <Container width="48%" flex="column">
+            <label className={classes.label} htmlFor="Gender">
+              Gender:
+            </label>
+            <select
+              className={classes.input}
+              value={gender}
+              onChange={inputChangeHandler(setGender)}
+            >
+              <option>Select </option>
+              <option>Female </option>
+              <option>Male </option>
+            </select>
+          </Container>
 
-        <Container width="100%" flex="column">
-          <label className={classes.label} htmlFor="Gender">
-            Proposed Date:
-          </label>
-          <input
-            type="datetime-local"
-            className={classes.input}
-            value={proposedDate}
-            onChange={inputChangeHandler(setProposedDate)}
-          />
+          <Container width="48%" flex="column">
+            <label className={classes.label} htmlFor="Gender">
+              Proposed Date:
+            </label>
+            <input
+              type="datetime-local"
+              className={classes.input}
+              value={proposedDate}
+              onChange={inputChangeHandler(setProposedDate)}
+            />
+          </Container>
         </Container>
 
         <Container width="100%" justify="flex-end">

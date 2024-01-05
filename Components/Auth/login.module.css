@@ -19,7 +19,8 @@
 
 .submit-btn{
     height: 3rem;
-    width: 8rem;
+    width: fit-content;
+    padding: 0rem 1.5rem;
     font-size: larger;
     background-color: #139D69;
     border: none;
