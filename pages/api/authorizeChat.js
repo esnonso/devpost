@@ -22,13 +22,18 @@ export default async function AuthorizeChat(req, res) {
       select: "name",
       model: User,
     });
-    if (data.did !== did && !session) throwError("Unauthorized Access", 403);
-    if (session && data.identifier === "UserId") {
-      if (role !== "Doctor") {
-        if (data.user.toString() !== userId.toString())
-          throwError("Unauthorized Access", 403);
+
+    if (data.identifier === "Web5") {
+      if (data.did !== did && role !== "Doctor")
+        throwError("Unauthorized Access", 403);
+    }
+
+    if (data.identifier === "UserId") {
+      if (role !== "Doctor" && data.user.toString() !== userId.toString()) {
+        throwError("Unauthorized Access", 403);
       }
     }
+
     return res.status(200).json(data);
   } catch (error) {
     console.log(error);

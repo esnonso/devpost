@@ -8,6 +8,7 @@ import classes from "./index.module.css";
 import { appointmentProtocolDefinition } from "@/Web5/protocol";
 import axios from "axios";
 import Loader from "../Loader";
+import { createChatProtocol } from "@/Web5/functions";
 
 export default function AppointmentForm() {
   const router = useRouter();
@@ -31,27 +32,12 @@ export default function AppointmentForm() {
       const { web5, did } = await Web5.connect();
       if (typeof window !== "undefined") localStorage.setItem("did", did);
       setDid(did);
-      const { protocols: existingProtocol, status: existingProtocolStatus } =
-        await web5.dwn.protocols.query({
-          message: {
-            filter: {
-              protocol: "http://esnonso.com/book-appointment-protocol",
-            },
-          },
-        });
-      if (
-        existingProtocolStatus.code !== 200 ||
-        existingProtocol.length === 0
-      ) {
-        const { protocol, status } = await web5.dwn.protocols.configure({
-          message: {
-            definition: appointmentProtocolDefinition,
-          },
-        });
-        await protocol.send(did);
-      } else {
-        return;
-      }
+      createChatProtocol(
+        web5,
+        did,
+        "http://esnonso.com/book-appointment-protocol",
+        appointmentProtocolDefinition
+      );
     } catch (error) {
       setError("An error occured");
     } finally {

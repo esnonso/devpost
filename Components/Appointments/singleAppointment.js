@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Container from "../Containers/container";
@@ -9,9 +8,14 @@ import classes from "./index.module.css";
 import axios from "axios";
 import Loader from "../Loader";
 import { appointmentProtocolDefinition } from "@/Web5/protocol";
+import {
+  fetchSentMessages,
+  fetchReceivedMessages,
+  sortWeb5Messages,
+  createChatProtocol,
+} from "@/Web5/functions";
 
 export default function SingleAppointment({ id }) {
-  const router = useRouter();
   const { status } = useSession();
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -24,125 +28,82 @@ export default function SingleAppointment({ id }) {
   const [datePicker, showDatePicker] = useState(true);
   const [web5approvedDate, setWeb5approvedDate] = useState("");
 
-  const fetchApprovedDateWeb5Doctor = async () => {
-    try {
-      const { web5 } = await Web5.connect();
-      const response = await web5.dwn.records.query({
-        message: {
-          filter: {
-            protocol: "http://esnonso.com/book-appointment-protocol",
-          },
-        },
-      });
-      if (response.status.code === 200) {
-        const approvedDate = await Promise.all(
-          response.records.map(async (record) => {
-            const data = await record.data.json();
-            return data;
-          })
-        );
-
-        setWeb5approvedDate(approvedDate[0].approvedDate);
-      } else {
-        throw new Error("An error occured loading this page");
-      }
-    } catch (error) {
-      return error;
-    }
-  };
-
-  const fetchApprovedDateWeb5Patient = async (attendantDid) => {
-    try {
-      const { web5 } = await Web5.connect();
-      const response = await web5.dwn.records.query({
-        from: attendantDid,
-        message: {
-          filter: {
-            protocol: "http://esnonso.com/book-appointment-protocol",
-            schema: "http://esnonso.com/book-appointment-schema",
-          },
-        },
-      });
-      if (response.status.code === 200) {
-        const approvedDate = await Promise.all(
-          response.records.map(async (record) => {
-            const data = await record.data.json();
-            return data;
-          })
-        );
-        setWeb5approvedDate(approvedDate[0].approvedDate);
-      } else {
-        throw new Error("An error occured loading this page");
-      }
-    } catch (error) {
-      return error;
-    }
-  };
-
-  const loadAppointmentHandler = async () => {
+  const authorizeAppointmentHandler = async () => {
     try {
       setIsLoading(true);
-      let roles;
-      if (status === "authenticated") {
-        const userData = await axios.post("/api/getUser");
-        roles = userData.data.user.role;
-        setRole(userData.data.user.role);
-        if (
-          userData.data.user.role === "Doctor" ||
-          userData.data.user.role === "Lab Guy"
-        ) {
-          const { web5, did } = await Web5.connect();
-          setAttendantDid(did);
-          setWebFive(web5);
-          setStaffName(userData.data.user.name);
-        }
+      let did = null;
+      if (typeof window !== "undefined") {
+        did = localStorage.getItem("did");
       }
-      const response = await axios.post("/api/singleAppointment", { id });
-      setAppts(response.data);
-      if (
-        response.data.status !== "Awaiting" &&
-        response.data.identifier === "Web5"
-      ) {
-        setAttendantDid(response.data.attendantDid);
-        if (roles === "Doctor" || roles === "Lab Guy")
-          fetchApprovedDateWeb5Doctor();
-        if (roles !== "Doctor" && roles === "Lab Guy")
-          fetchApprovedDateWeb5Patient(response.data.attendantDid);
+      const response = await axios.post("/api/singleAppointment", { id, did });
+      setRole(response.data.role);
+
+      if (response.data.appts.identifier === "Web5") {
+        const { web5 } = await Web5.connect();
+        setWebFive(web5);
+        setAttendantDid(response.data.appts.attendantDid);
+        if (response.data.appts.status !== "Awaiting")
+          setStaffName(response.data.appts.scheduledWith.name);
+        setAppts(response.data.appts);
+      }
+
+      if (response.data.appts.identifier === "UserId") {
+        setAppts(response.data.appts);
       }
     } catch (error) {
-      setError("An error occured");
+      setError("An error occured loading this page");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getApprovedDateForWeb5UsersHandler = async () => {
+    try {
+      setIsLoading(true);
+      if (
+        (role === "Doctor" || role === "Lab Guy") &&
+        appts.identifier === "Web5"
+      ) {
+        const approvedDate = await fetchSentMessages(
+          webFive,
+          "http://esnonso.com/book-appointment-protocol"
+        );
+        if (approvedDate) setWeb5approvedDate(approvedDate[0].approvedDate);
+      }
+      if (role === "" && appts.identifier === "Web5") {
+        const approvedDate = await fetchReceivedMessages(
+          webFive,
+          attendantDid,
+          "http://esnonso.com/book-appointment-protocol",
+          "http://esnonso.com/book-appointment-schema"
+        );
+        if (approvedDate) setWeb5approvedDate(approvedDate[0].approvedDate);
+      }
+    } catch (error) {
+      console.log(error);
+      setError("An error occured loading approved Date");
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    loadAppointmentHandler();
-  }, [status]);
+    authorizeAppointmentHandler();
+  }, []);
+
+  useEffect(() => {
+    if (!webFive && appts.identifier !== "Web5") return;
+    getApprovedDateForWeb5UsersHandler();
+  }, [webFive, appts]);
 
   const createChatProtocolHandler = async () => {
     try {
-      const { protocols: existingProtocol, status: existingProtocolStatus } =
-        await webFive.dwn.protocols.query({
-          message: {
-            filter: {
-              protocol: "http://esnonso.com/book-appointment-protocol",
-            },
-          },
-        });
-      if (
-        existingProtocolStatus.code !== 200 ||
-        existingProtocol.length === 0
-      ) {
-        const { protocol, status } = await webFive.dwn.protocols.configure({
-          message: {
-            definition: appointmentProtocolDefinition,
-          },
-        });
-        await protocol.send(did);
-      } else {
-        return;
-      }
+      await createChatProtocol(
+        webFive,
+        attendantDid,
+        "http://esnonso.com/book-appointment-protocol",
+        appointmentProtocolDefinition
+      );
     } catch (error) {
       return error;
     }
@@ -189,9 +150,7 @@ export default function SingleAppointment({ id }) {
         await record.send(recipientDid);
       }
       setAppts(data.data);
-      window.location.reload();
     } catch (error) {
-      console.log(error);
       setError("An error occured");
     } finally {
       setIsLoading(false);

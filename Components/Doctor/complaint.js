@@ -9,6 +9,12 @@ import { userProtocolDefinition } from "@/Web5/protocol";
 import axios from "axios";
 import Loader from "../Loader";
 import Prescription from "./prescription";
+import {
+  fetchSentMessages,
+  fetchReceivedMessages,
+  sortWeb5Messages,
+  createChatProtocol,
+} from "@/Web5/functions";
 
 export default function Complaints({ id }) {
   const router = useRouter();
@@ -63,88 +69,21 @@ export default function Complaints({ id }) {
     }
   };
 
-  const fetchDoctorsMessagesHandler = async (web5) => {
-    try {
-      const response = await web5.dwn.records.query({
-        message: {
-          filter: {
-            protocol: "http://esnonso.com/chat-with-doc-protocol",
-          },
-        },
-      });
-
-      if (response.status.code === 200) {
-        const sentChats = await Promise.all(
-          response.records.map(async (record) => {
-            const data = await record.data.json();
-            return data;
-          })
-        );
-        return sentChats;
-      } else {
-        return "error", response.status;
-      }
-    } catch (error) {
-      setError("An error occured");
-    }
-  };
-
-  const fetchPatientMessagesHandler = async (web5, did) => {
-    try {
-      const response = await web5.dwn.records.query({
-        from: did,
-        message: {
-          filter: {
-            protocol: "http://esnonso.com/chat-with-doc-protocol",
-            schema: "http://esnonso.com/chat-with-doctor-schema",
-          },
-        },
-      });
-
-      if (response.status.code === 200) {
-        const receivedMessages = await Promise.all(
-          response.records.map(async (record) => {
-            const data = await record.data.json();
-            return data;
-          })
-        );
-        return receivedMessages;
-      } else {
-        console.log("error", response.status);
-        throw new Error("An error occured");
-      }
-    } catch (error) {
-      setError(error.message || "An error occured");
-    }
-  };
-
-  function compare(a, b) {
-    if (a.time < b.time) {
-      return -1;
-    }
-    if (a.time > b.time) {
-      return 1;
-    }
-    return 0;
-  }
-
   const getWeb5RepliesHandler = async (webF, uDid) => {
     try {
       setError("");
-      const allSent = await fetchDoctorsMessagesHandler(webF);
-      const sent = allSent.filter((r) => r.complaintId === id);
-      const allReceived = await fetchPatientMessagesHandler(webF, uDid);
-      const received = allReceived.filter((r) => r.complaintId === id);
-      const replies = sent.concat(received);
-      const removeDuplicates = replies.filter(
-        (value, index, self) =>
-          index ===
-          self.findIndex(
-            (c) => c.message === value.message && c.time === value.time
-          )
+      const sent = await fetchSentMessages(
+        webFive,
+        "http://esnonso.com/chat-with-doc-protocol"
       );
-      const allReplies = await removeDuplicates.sort(compare);
-      setReplies(allReplies);
+      const received = await fetchReceivedMessages(
+        webFive,
+        patientDid,
+        "http://esnonso.com/chat-with-doc-protocol",
+        "http://esnonso.com/chat-with-doctor-schema"
+      );
+      const replies = await sortWeb5Messages(sent, received, id);
+      setReplies(replies);
     } catch (error) {
       setError("An error occured fetching Web5 replies");
     }
@@ -157,32 +96,17 @@ export default function Complaints({ id }) {
   useEffect(() => {
     if (!webFive) return;
     setIsLoading(true);
-    getWeb5RepliesHandler(webFive, patientDid).then(setIsLoading(false));
+    getWeb5RepliesHandler().then(() => setIsLoading(false));
   }, [webFive]);
 
   const createChatProtocolHandler = async () => {
     try {
-      const { protocols: existingProtocol, status: existingProtocolStatus } =
-        await webFive.dwn.protocols.query({
-          message: {
-            filter: {
-              protocol: "http://esnonso.com/chat-with-doc-protocol",
-            },
-          },
-        });
-      if (
-        existingProtocolStatus.code !== 200 ||
-        existingProtocol.length === 0
-      ) {
-        const { protocol, status } = await webFive.dwn.protocols.configure({
-          message: {
-            definition: userProtocolDefinition,
-          },
-        });
-        await protocol.send(doctorDid);
-      } else {
-        return;
-      }
+      await createChatProtocol(
+        webFive,
+        doctorDid,
+        "http://esnonso.com/chat-with-doc-protocol",
+        userProtocolDefinition
+      );
     } catch (error) {
       setError("An error occured creating chat protocol");
     }
@@ -269,7 +193,7 @@ export default function Complaints({ id }) {
       complaint.identifier === "Web5" &&
       complaint.status === "With a Doctor"
     ) {
-      await getWeb5RepliesHandler(webFive, doctorDid);
+      await getWeb5RepliesHandler();
     }
   };
 

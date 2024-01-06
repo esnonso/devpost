@@ -29,8 +29,9 @@ export default function Appointments() {
       if (status === "authenticated") {
         response = await axios.post("/api/getUserAppointments");
       }
-      setAppointments(response.data);
+      if (response) setAppointments(response.data);
     } catch (error) {
+      console.log(error);
       if (error.response) setError(error.response.data);
       else setError("An error occured!");
     } finally {
