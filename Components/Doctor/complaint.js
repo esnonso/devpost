@@ -164,8 +164,6 @@ export default function Complaints({ id }) {
             recipient: patientDid,
           },
         });
-        console.log(patientDid);
-        console.log(doctorDid);
         await record.send(patientDid);
         setReply("");
       }
