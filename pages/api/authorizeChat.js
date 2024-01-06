@@ -31,6 +31,7 @@ export default async function AuthorizeChat(req, res) {
     }
     return res.status(200).json(data);
   } catch (error) {
+    console.log(error);
     if (error.status) {
       return res.status(error.status).json(error.message);
     } else {
