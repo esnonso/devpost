@@ -10,6 +10,9 @@ export default function AppointmentRequests(props) {
       <PTags fontSize="20px" borderBottom="1px gray solid" margin="0.5rem">
         Appointment requests
       </PTags>
+      {props.appointments && props.appointments.length < 1 && (
+        <small style={{ textAlign: "center" }}>No new requests</small>
+      )}
       {props.appointments.map((a) => {
         return (
           <Container

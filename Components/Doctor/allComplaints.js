@@ -14,7 +14,7 @@ export default function PatientsComplaints(props) {
           : "All Message Requests"}
       </PTags>
       {props.messages && props.messages.length < 1 && (
-        <small style={{ textAlign: "center" }}>You have no messages</small>
+        <small style={{ textAlign: "center" }}>No new complaints</small>
       )}
       {props.messages &&
         props.messages.map((c) => {
