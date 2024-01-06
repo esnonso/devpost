@@ -157,6 +157,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
 
   const getWeb5RepliesHandler = async (webF, dDid) => {
     try {
+      setError("");
       const allSent = await fetchPatientMessagesHandler(webF);
       const sent = allSent.filter((r) => r.complaintId === id);
       const allReceived = await fetchDoctorsMessagesHandler(webF, dDid);
@@ -173,7 +174,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
       const allReplies = await removeDuplicates.sort(compare);
       setReplies(allReplies);
     } catch {
-      setError("An error occured fetching replies");
+      setError("An error occured fetching Web5 replies");
     }
   };
 
@@ -184,7 +185,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
       });
       setReplies(response.data.replies);
     } catch (err) {
-      setError("An error occured fetching replies");
+      setError("An error occured fetching User replies");
     }
   };
 

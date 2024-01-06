@@ -23,12 +23,12 @@ export default async function handler(req, res) {
     if (!session) {
       openComplaint = await Message.findOne({
         did: data.did,
-        status: "Awaiting" || "with a doctor",
+        status: { $in: ["With a Doctor", "Awaiting"] },
       });
     } else {
       openComplaint = await Message.findOne({
         user: userId,
-        status: "Awaiting" || "with a doctor",
+        status: { $in: ["With a Doctor", "Awaiting"] },
       });
     }
 
@@ -52,7 +52,6 @@ export default async function handler(req, res) {
         "Message sent! A doctor will reply you within 2 minutes. Check your messages",
     });
   } catch (error) {
-    console.log(error);
     if (error.status) {
       return res.status(error.status).json(error.message);
     } else {

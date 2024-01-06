@@ -130,6 +130,7 @@ export default function Complaints({ id }) {
 
   const getWeb5RepliesHandler = async (webF, uDid) => {
     try {
+      setError("");
       const allSent = await fetchDoctorsMessagesHandler(webF);
       const sent = allSent.filter((r) => r.complaintId === id);
       const allReceived = await fetchPatientMessagesHandler(webF, uDid);
@@ -145,7 +146,7 @@ export default function Complaints({ id }) {
       const allReplies = await removeDuplicates.sort(compare);
       setReplies(allReplies);
     } catch (error) {
-      setError("An error occured fetching replies");
+      setError("An error occured fetching Web5 replies");
     }
   };
 
@@ -183,21 +184,32 @@ export default function Complaints({ id }) {
         return;
       }
     } catch (error) {
-      setError("An error occured");
+      setError("An error occured creating chat protocol");
     }
   };
 
   const attendToComplainHandler = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.post("/api/changeMessageStatus", {
-        messageId: id,
-        did: doctorDid,
-        status: "With a Doctor",
-      });
-      setComplaint(response.data);
+
       if (complaint.identifier === "Web5") {
-        createChatProtocolHandler();
+        if (!doctorDid)
+          throw new Error("An error occured, reload page and try again");
+        const response = await axios.post("/api/changeMessageStatus", {
+          messageId: id,
+          did: doctorDid,
+          status: "With a Doctor",
+        });
+        setComplaint(response.data);
+        await createChatProtocolHandler();
+      }
+
+      if (complaint.identifier === "UserId") {
+        const response = await axios.post("/api/changeMessageStatus", {
+          messageId: id,
+          status: "With a Doctor",
+        });
+        setComplaint(response.data);
       }
     } catch (error) {
       setError(error.message);
@@ -240,7 +252,6 @@ export default function Complaints({ id }) {
         setReplies(res.data.replies);
       }
     } catch (error) {
-      console.log(error);
       setError("An error occured");
     } finally {
       setIsSubmitting(false);
