@@ -214,7 +214,6 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
   useEffect(() => {
     if (!message && !webFive) return;
     const intervalId = setInterval(async () => {
-      //console.log("Aba");
       refreshChatsHandler();
     }, 2000);
 
@@ -244,7 +243,6 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
         });
         await record.send(doctorDid);
         setReply("");
-        ///getWeb5RepliesHandler(webFive, doctorDid);
       }
       if (status === "authenticated") {
         const res = await axios.post("/api/postMessageReply", {
