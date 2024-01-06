@@ -59,7 +59,7 @@ export default function UserPrescription(props) {
                 {p.brand} {p.name}
               </PTags>
               <PTags padding="0.5rem">{p.quantityPill}</PTags>
-              <PTags padding="0.5rem">{p.dose} Daily for</PTags>
+              <PTags padding="0.5rem">{p.dose} Daily </PTags>
               <PTags padding="0.5rem">{p.noOfDays} Days</PTags>
             </Container>
           ))}

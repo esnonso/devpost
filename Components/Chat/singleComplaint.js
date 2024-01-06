@@ -186,9 +186,9 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
     try {
       setIsLoading(true);
       await axios.post("/api/reopenChat", {
-        messageId: message.id,
+        messageId: id,
       });
-      rou;
+      window.location.reload();
     } catch (error) {
       setError("An error occured! Try again");
       setIsLoading(false);
