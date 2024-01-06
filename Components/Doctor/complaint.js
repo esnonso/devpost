@@ -240,6 +240,7 @@ export default function Complaints({ id }) {
         setReplies(res.data.replies);
       }
     } catch (error) {
+      console.log(error);
       setError("An error occured");
     } finally {
       setIsSubmitting(false);
