@@ -37,19 +37,16 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
   const authorizeMessageOwner = async () => {
     try {
       setIsLoading(true);
-      if (status === "unauthenticated" && typeof window !== "undefined") {
-        const did = localStorage.getItem("did");
+      if (status === "unauthenticated") {
+        const { web5, did } = await Web5.connect();
+        setWebFive(web5);
+        setMyDid(did);
         if (did !== null) {
           const response = await axios.post(`/api/authorizeChat`, {
             did: did,
             chatId: params.chatId,
           });
-          if (response.data.status !== "Awaiting") {
-            setDoctorDid(response.data.doctorDid);
-            const { web5, did } = await Web5.connect();
-            setWebFive(web5);
-            setMyDid(did);
-          }
+          setDoctorDid(response.data.doctorDid);
           setMessage(response.data);
         }
       }
@@ -134,10 +131,33 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
     }
   };
 
+  const refreshMessageStatusHandler = async () => {
+    try {
+      if (message.identifier === "Web5" && message.status !== "Completed") {
+        if (myDid !== "") {
+          const response = await axios.post(`/api/authorizeChat`, {
+            did: myDid,
+            chatId: params.chatId,
+          });
+          setMessage(response.data);
+        }
+      }
+      if (message.identifier === "UserId" && message.status !== "Completed") {
+        const response = await axios.post(`/api/authorizeChat`, {
+          chatId: params.chatId,
+        });
+        setMessage(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+      setError("An error occured Loading this page");
+    }
+  };
+
   useEffect(() => {
     if (!message && !webFive) return;
     const intervalId = setInterval(async () => {
-      refreshChatsHandler();
+      refreshMessageStatusHandler().then(() => refreshChatsHandler());
     }, 2000);
 
     return () => clearInterval(intervalId);
@@ -145,8 +165,9 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
 
   const sendReplyHandler = async (e) => {
     try {
-      setIsSubmitting(true);
       e.preventDefault();
+      setIsSubmitting(true);
+      if (reply === "") return;
       var currentdate = new Date();
       if (status === "unauthenticated") {
         const chat = {

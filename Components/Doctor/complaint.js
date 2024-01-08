@@ -146,7 +146,7 @@ export default function Complaints({ id }) {
     try {
       setIsSubmitting(true);
       e.preventDefault();
-
+      if (reply === "") return;
       if (complaint.identifier === "Web5") {
         var currentdate = new Date();
         const chat = {

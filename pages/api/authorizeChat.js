@@ -25,7 +25,7 @@ export default async function AuthorizeChat(req, res) {
 
     if (data.identifier === "Web5") {
       if (data.did !== did && role !== "Doctor")
-        throwError("Unauthorized Access", 403);
+        throwError("Unauthorized Accessn", 403);
     }
 
     if (data.identifier === "UserId") {
@@ -36,7 +36,6 @@ export default async function AuthorizeChat(req, res) {
 
     return res.status(200).json(data);
   } catch (error) {
-    console.log(error);
     if (error.status) {
       return res.status(error.status).json(error.message);
     } else {
