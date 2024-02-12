@@ -37,7 +37,7 @@ const Footer = () => {
             Devpost
           </PTags>
           <PTags textAlign="left" margin="0 0 0.3rem 0">
-            <Link href="/chat/new" className={classes["link"]}>
+            <Link href="/messages/new" className={classes["link"]}>
               Speak to a doctor
             </Link>
           </PTags>
