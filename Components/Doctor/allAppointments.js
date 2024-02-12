@@ -22,9 +22,8 @@ export default function AppointmentRequests(props) {
             align="center"
           >
             <PTags width="40%" margin="0.5rem">
-              {a.identifier === "UserId" && (
-                <span style={{ color: "#139d69", fontSize: "20px" }}>★</span>
-              )}
+              <span style={{ color: "#139d69", fontSize: "20px" }}>★</span>
+
               {a.apptType}
             </PTags>
 
