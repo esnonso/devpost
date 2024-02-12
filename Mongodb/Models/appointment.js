@@ -2,18 +2,11 @@ import mongoose, { Schema } from "mongoose";
 
 const appointmentSchema = new mongoose.Schema(
   {
-    identifier: {
-      type: String,
-      required: true,
-    },
     apptType: {
       type: String,
       required: [true, "Why are you booking appointment?"],
     },
-    gender: {
-      type: String,
-      required: [true, "We need to know your gender"],
-    },
+
     proposedDate: {
       type: Date,
       required: [true, "When is your preferred date"],
@@ -30,9 +23,9 @@ const appointmentSchema = new mongoose.Schema(
 
     testType: String,
 
-    attendantDid: String,
+    notes: String,
 
-    userDid: String,
+    conclusion: String,
   },
   { timestamps: true }
 );

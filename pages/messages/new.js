@@ -5,7 +5,7 @@ export default function Complaints() {
   return (
     <Fragment>
       <Head>
-        <title>Devpost web5 Chat</title>
+        <title>New Message</title>
         <meta name="description" content="Chat with doctor" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>

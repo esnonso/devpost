@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import AddStaff from "./Staff/addStaff";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import Button from "../Button";
 import Container from "../Containers/container";
 import { PTags } from "../Text";
@@ -11,6 +13,8 @@ import classes from "./index.module.css";
 import Loader from "../Loader";
 
 export default function AdministaratorDashboard(props) {
+  const router = useRouter();
+  const { status } = useSession();
   const [addStaff, showAddStaff] = useState(false);
   const [addPill, showAddPill] = useState(false);
   const [staff, setStaff] = useState([]);
@@ -19,6 +23,18 @@ export default function AdministaratorDashboard(props) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [dob, setDob] = useState("");
+
+  const confirmAdminHandler = async () => {
+    try {
+      if (status === "unauthenticated") router.replace("/login");
+      const response = await axios.post("/api/getUser");
+      if (response.data.user.role !== "Administrator")
+        router.replace("/profile");
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const fetchStaffHandler = async () => {
     try {
@@ -46,8 +62,8 @@ export default function AdministaratorDashboard(props) {
   };
 
   useEffect(() => {
-    fetchStaffHandler();
-  }, []);
+    confirmAdminHandler().then(() => fetchStaffHandler());
+  }, [status]);
 
   const showStaffFormHandler = () => showAddStaff(true);
   const hideStaffFormHandler = () => showAddStaff(false);

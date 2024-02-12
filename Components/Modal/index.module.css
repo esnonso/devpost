@@ -14,12 +14,21 @@
     box-sizing: border-box;
 }
 
-.btn{
-    background-color: rgb(223, 39, 39);
-    color: white;
-    border:1px gray solid;
-    border-radius: 3px;
-   
+.btn-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-close {
+    display: flex;
+    height: 1rem;
+    width: 1rem;
+    justify-content: center;
+    align-items: center;
+    background-color: #F54235;
+    border: none;
+    border-radius: 5px;
 }
 
 @keyframes examples {

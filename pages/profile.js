@@ -6,7 +6,7 @@ export default function Profile() {
   return (
     <Fragment>
       <Head>
-        <title>Devpost web5 Profile</title>
+        <title>Profile</title>
         <meta name="description" content="Login page" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>

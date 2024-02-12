@@ -18,7 +18,6 @@ button:disabled {
     color: white;
     width: fit-content;
     height: 3rem;
-    margin: 1rem 1rem 0 0;
     border: none;
     font:inherit;
     padding: 0rem 1rem;
@@ -35,4 +34,8 @@ button:disabled {
     font: inherit;
     border-radius: 5px;
     padding: 0rem 1rem;
+}
+
+button{
+    border-radius: 5px;
 }

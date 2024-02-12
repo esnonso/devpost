@@ -1,5 +1,4 @@
 import { connectDatabase } from "@/Mongodb";
-import Prescription from "@/Mongodb/Models/prescription";
 import User from "@/Mongodb/Models/user";
 import Message from "@/Mongodb/Models/message";
 import { throwError } from "@/Components/Error/errorFunction";
@@ -13,14 +12,15 @@ export default async function handler(req, res) {
     if (!session) throwError("Unauthorized Accesses", 403);
     const user = await User.findOne({ email: session.user.email });
     if (user.role !== "Doctor") throwError("Unauthorized Access", 403);
-    const { messageId, pills } = req.body;
+    const { messageId } = req.body;
     const foundMessage = await Message.findById(messageId);
     if (!foundMessage) throwError("An error occured", 500);
-    const prescription = await new Prescription({ pills }).save();
-    foundMessage.prescription = prescription._id;
+    foundMessage.status = "Closed";
+
     await foundMessage.save();
-    res.status(201).json("Prescription added for user");
+    res.status(201).json("Case closed");
   } catch (error) {
+    console.log(error);
     if (error.status) {
       return res.status(error.status).json(error.message);
     } else {

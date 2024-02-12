@@ -1,7 +1,5 @@
-import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { Web5 } from "@web5/api";
 import axios from "axios";
 import Container from "../Containers/container";
 import { PTags } from "../Text";
@@ -9,25 +7,15 @@ import Button from "../Button";
 import Loader from "../Loader";
 import classes from "./index.module.css";
 import UserPrescription from "./prescription";
-import { userProtocolDefinition } from "@/Web5/protocol";
-import {
-  fetchSentMessages,
-  fetchReceivedMessages,
-  sortWeb5Messages,
-  createChatProtocol,
-} from "@/Web5/functions";
 
 export default function SinglemessagesForUnregisteredPatient({ id }) {
-  const { status } = useSession();
   const [message, setMessage] = useState("");
   const [replies, setReplies] = useState([]);
   const [reply, setReply] = useState("");
   const [loading, setIsLoading] = useState(false);
   const [prescription, showPrescription] = useState(false);
   const [error, setError] = useState("");
-  const [doctorDid, setDoctorDid] = useState("");
-  const [myDid, setMyDid] = useState("");
-  const [webFive, setWebFive] = useState(null);
+  const [name, setName] = useState("");
   const [submitting, setIsSubmitting] = useState(false);
   const params = useParams();
 
@@ -37,64 +25,17 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
   const authorizeMessageOwner = async () => {
     try {
       setIsLoading(true);
-      if (status === "unauthenticated") {
-        const { web5, did } = await Web5.connect();
-        setWebFive(web5);
-        setMyDid(did);
-        if (did !== null) {
-          const response = await axios.post(`/api/authorizeChat`, {
-            did: did,
-            chatId: params.chatId,
-          });
-          setDoctorDid(response.data.doctorDid);
-          setMessage(response.data);
-        }
-      }
-
-      if (status === "authenticated") {
-        const response = await axios.post(`/api/authorizeChat`, {
-          chatId: params.chatId,
-        });
-        setMessage(response.data);
-        setReplies(response.data.replies);
-      }
+      const response = await axios.post(`/api/authorizeChatUser`, {
+        chatId: params.chatId,
+      });
+      setMessage(response.data);
+      setName(response.data.user.name.split(" ")[0]);
+      setReplies(response.data.replies);
     } catch (error) {
-      setError("An error occured");
+      console.log(error);
+      setError("An error occured Loding message");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const createChatProtocolHandler = async () => {
-    try {
-      await createChatProtocol(
-        webFive,
-        myDid,
-        "http://esnonso.com/chat-with-doc-protocol",
-        userProtocolDefinition
-      );
-    } catch (error) {
-      setError("An error occured creating chat protocol");
-    }
-  };
-
-  const getWeb5RepliesHandler = async () => {
-    try {
-      setError("");
-      const sent = await fetchSentMessages(
-        webFive,
-        "http://esnonso.com/chat-with-doc-protocol"
-      );
-      const received = await fetchReceivedMessages(
-        webFive,
-        doctorDid,
-        "http://esnonso.com/chat-with-doc-protocol",
-        "http://esnonso.com/chat-with-doctor-schema"
-      );
-      const replies = await sortWeb5Messages(sent, received, id);
-      setReplies(replies);
-    } catch (error) {
-      setError("An error occured fetching Web5 replies");
     }
   };
 
@@ -112,90 +53,43 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
   useEffect(() => {
     setError();
     authorizeMessageOwner();
-  }, [status]);
-
-  useEffect(() => {
-    if (!webFive) return;
-    setIsLoading(true);
-    createChatProtocolHandler()
-      .then(() => getWeb5RepliesHandler())
-      .then(() => setIsLoading(false));
-  }, [webFive]);
+  }, []);
 
   const refreshChatsHandler = async () => {
-    if (message.identifier === "UserId" && message.status === "With a Doctor") {
-      await getUserRepliesHandler();
-    }
-    if (message.identifier === "Web5" && message.status === "With a Doctor") {
-      await getWeb5RepliesHandler();
-    }
+    await getUserRepliesHandler();
   };
 
   const refreshMessageStatusHandler = async () => {
     try {
-      if (message.identifier === "Web5" && message.status !== "Completed") {
-        if (myDid !== "") {
-          const response = await axios.post(`/api/authorizeChat`, {
-            did: myDid,
-            chatId: params.chatId,
-          });
-          setMessage(response.data);
-        }
-      }
-      if (message.identifier === "UserId" && message.status !== "Completed") {
-        const response = await axios.post(`/api/authorizeChat`, {
-          chatId: params.chatId,
-        });
-        setMessage(response.data);
-      }
+      const response = await axios.post(`/api/authorizeChatUser`, {
+        chatId: params.chatId,
+      });
+      setMessage(response.data);
     } catch (error) {
-      console.log(error);
       setError("An error occured Loading this page");
     }
   };
 
   useEffect(() => {
-    if (!message && !webFive) return;
+    if (!message) return;
     const intervalId = setInterval(async () => {
       refreshMessageStatusHandler().then(() => refreshChatsHandler());
     }, 2000);
 
     return () => clearInterval(intervalId);
-  }, [message, webFive]);
+  }, [message]);
 
   const sendReplyHandler = async (e) => {
     try {
       e.preventDefault();
       setIsSubmitting(true);
       if (reply === "") return;
-      var currentdate = new Date();
-      if (status === "unauthenticated") {
-        const chat = {
-          complaintId: id,
-          message: reply,
-          time: currentdate,
-          author: "User",
-        };
-        const { record } = await webFive.dwn.records.write({
-          data: chat,
-          message: {
-            protocol: "http://esnonso.com/chat-with-doc-protocol",
-            protocolPath: "chat",
-            schema: "http://esnonso.com/chat-with-doctor-schema",
-            recipient: doctorDid,
-          },
-        });
-        await record.send(doctorDid);
-        setReply("");
-      }
-      if (status === "authenticated") {
-        const res = await axios.post("/api/postMessageReply", {
-          messageId: id,
-          reply: { message: reply, author: "You", time: new Date() },
-        });
-        setReply("");
-        setReplies(res.data.replies);
-      }
+      const res = await axios.post("/api/postMessageReply", {
+        messageId: id,
+        reply: { message: reply, author: name, time: new Date() },
+      });
+      setReply("");
+      setReplies(res.data.replies);
     } catch (error) {
       setError(error.message || "An error occured");
     } finally {
@@ -203,22 +97,9 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
     }
   };
 
-  const reopenChatHandler = async () => {
-    try {
-      setIsLoading(true);
-      await axios.post("/api/reopenChat", {
-        messageId: id,
-      });
-      window.location.reload();
-    } catch (error) {
-      setError("An error occured! Try again");
-      setIsLoading(false);
-    }
-  };
-
   return (
     <Container width="100%" margin="5rem 0 0 0" flex="column" padding="1rem">
-      {message.status === "Completed" && (
+      {message.prescription && (
         <Container width="100%" justify="flex-end">
           <Button
             text="View Prescription"
@@ -229,16 +110,6 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
             border={"none"}
             margin="0.2rem"
             click={showPrescriptionHandler}
-          />
-          <Button
-            text="Re Open"
-            width="fit-content"
-            back={"#139d69"}
-            padding={"0.3rem 2rem"}
-            color="white"
-            border={"none"}
-            margin="0.2rem"
-            click={reopenChatHandler}
           />
         </Container>
       )}
@@ -254,7 +125,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
         </Container>
       )}
       <PTags margin="0 0 0.5rem 0">
-        <b>Title: </b> {message.title}
+        <b>Complaint: </b> {message.complaint}
       </PTags>
       <PTags margin="0 0 0.5rem 0">
         <b> Status: </b>
@@ -262,7 +133,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
           <span
             style={{
               backgroundColor:
-                message.status === "Awaiting"
+                message.status === "Unattended"
                   ? "red"
                   : message.status === "With a Doctor"
                   ? "#FFEC19"
@@ -278,10 +149,24 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
       <PTags margin="0 0 0.5rem 0">
         <b>Attended By: </b> {message.attendedBy && message.attendedBy.name}
       </PTags>
-      <PTags margin="0 0 2rem 0">
+      <PTags margin="0 0 0.5rem 0">
         <b>Message: </b>
         {message.message}
       </PTags>
+
+      {message.notes && (
+        <PTags margin="0 0 0.5rem 0">
+          <b>Notes: </b>
+          {message.notes}
+        </PTags>
+      )}
+
+      {message.conclusion && (
+        <PTags margin="0 0 2rem 0">
+          <b>Conclusion: </b>
+          {message.conclusion}
+        </PTags>
+      )}
 
       {/* REPLIES CODE */}
       <Container borderBottom="1px gray solid" padding="0.5rem" flex="column">
@@ -300,7 +185,7 @@ export default function SinglemessagesForUnregisteredPatient({ id }) {
             padding="0.5rem"
           >
             <PTags margin="0 0 0.7rem 0">
-              {r.author}: {r.message}
+              <b>{r.author}:</b> {r.message}
             </PTags>
             <Container>
               <small>

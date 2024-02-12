@@ -19,6 +19,7 @@
     padding: 1rem;
     left: 2.5%;
     width: 95%;
+    border-radius: 10px;
     background-color: white;
     position: absolute;
     overflow: auto;

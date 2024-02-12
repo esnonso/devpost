@@ -29,7 +29,7 @@ export default function AppointmentRequests(props) {
             </PTags>
 
             <PTags width="5%" margin="0.5rem" textAlign="center">
-              <b> {a.gender[0]}</b>
+              <b> {a.gender}</b>
             </PTags>
 
             <PTags width="40%" margin="0.5rem">

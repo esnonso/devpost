@@ -9,11 +9,13 @@ export default async function POST(req, res) {
     await connectDatabase();
     let data = req.body.data;
     if (
-      !data.firstname ||
-      !data.lastname ||
-      !data.email ||
-      !data.password ||
-      !data.role
+      data.firstname === "" ||
+      data.lastname === "" ||
+      data.email === "" ||
+      data.password === "" ||
+      data.role === "" ||
+      data.dob === "" ||
+      data.gender === ""
     ) {
       throwError("Fill all inputs", 422);
     }
@@ -26,10 +28,13 @@ export default async function POST(req, res) {
       email: data.email,
       password: await bcrypt.hash(data.password, 10),
       role: data.role || "user",
+      dob: data.dob,
+      gender: data.gender,
     }).save();
 
     return res.status(201).json({ message: "User creation success!" });
   } catch (error) {
+    console.log(error);
     if (error.status) {
       return res.status(error.status).json(error.message);
     } else {

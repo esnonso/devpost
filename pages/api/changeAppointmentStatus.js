@@ -8,7 +8,7 @@ import { throwError } from "@/Components/Error/errorFunction";
 export default async function handler(req, res) {
   try {
     await connectDatabase();
-    const { apptId, date, apptType, attendantDid, status } = req.body;
+    const { apptId, date, apptType, status } = req.body;
     // if (!date) throwError("Select a valid Date", 403);
     const session = await getServerSession(req, res, options);
     if (!session) throwError("User not authenticated", 403);
@@ -27,11 +27,9 @@ export default async function handler(req, res) {
     foundAppt.status = status;
     foundAppt.approvedDate = date || "";
     foundAppt.scheduledWith = foundDoctor._id;
-    if (foundAppt.identifier === "Web5") foundAppt.attendantDid = attendantDid;
     await foundAppt.save();
     return res.status(201).json(foundAppt);
   } catch (error) {
-    console.log(error);
     if (error.status) {
       return res.status(error.status).json(error.message);
     } else {

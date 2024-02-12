@@ -13,7 +13,7 @@ export default async function GetMessages(req, res) {
     const user = await User.findOne({ email: session.user.email });
     if (user.role !== "Doctor") throw new Error("An error occured");
     const query = {
-      status: { $in: ["With a Doctor", "Re opened"] },
+      status: { $in: ["With a Doctor", "Closed"] },
       attendedBy: user._id,
     };
     const data = await Message.find(query);

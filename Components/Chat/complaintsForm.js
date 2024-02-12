@@ -1,59 +1,42 @@
 import { useState } from "react";
-import { Web5 } from "@web5/api";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 import Container from "../Containers/container";
 import { PTags } from "../Text";
 import classes from "./index.module.css";
 import axios from "axios";
+import Modal from "../Modal";
 
 export default function ComplaintsForm() {
   const router = useRouter();
-  const { status } = useSession();
-  const [title, setTitle] = useState("");
+  const [complaint, setComplaint] = useState("");
   const [message, setMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState("");
-  const [age, setAge] = useState("");
-  const [gender, setGender] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const inputChangeHandler = (setState) => (e) => {
     setState(e.target.value);
   };
 
+  const closeSuccessMessageHandler = () => {
+    router.push("/messages");
+  };
+
   const submitHandler = async (e) => {
     setError("");
-    setSuccessMessage("");
     setIsSubmitting(true);
     e.preventDefault();
 
     try {
-      if (status === "unauthenticated") {
-        const { did } = await Web5.connect();
-        if (typeof window !== "undefined") localStorage.setItem("did", did);
-        await axios.post("/api/postMessage", {
-          title: title,
-          message: message,
-          gender: gender,
-          ageRange: age,
-          did: did,
-          status: "Awaiting",
-        });
-      } else {
-        await axios.post("/api/postMessage", {
-          title: title,
-          message: message,
-          gender: gender,
-          ageRange: age,
-          status: "Awaiting",
-        });
-      }
-      router.push("/chat");
+      if (complaint === "" || message === "")
+        throw new Error("Fill all inputs");
+      const response = await axios.post("/api/postMessage", {
+        complaint,
+        message,
+      });
+      setSuccessMessage(response.data);
     } catch (error) {
-      if (error.response) setError(error.response.data);
-      else setError("An error occured!");
-    } finally {
+      setError(error.response ? error.response.data : error.message);
       setIsSubmitting(false);
     }
   };
@@ -77,55 +60,21 @@ export default function ComplaintsForm() {
             </Container>
           )}
           <label className={classes.label} htmlFor="title">
-            Title:
+            Complaint <span style={{ color: "red" }}>*</span>
           </label>
           <input
             placeholder="ex: chronic headace, severe waistpain"
             type="text"
             className={classes.input}
-            value={title}
-            onChange={inputChangeHandler(setTitle)}
+            value={complaint}
+            onChange={inputChangeHandler(setComplaint)}
             required
           />
         </Container>
-        <Container width="100%" flex="column">
-          <label className={classes.label} htmlFor="title">
-            Age range:
-          </label>
 
-          <select
-            className={classes.input}
-            value={age}
-            onChange={inputChangeHandler(setAge)}
-            required
-          >
-            <option>Select </option>
-            <option>0 to 2 years</option>
-            <option>3 to 10 years</option>
-            <option>10 to 20 years </option>
-            <option>20 to 40 years </option>
-            <option>Above 40 </option>
-          </select>
-        </Container>
-
-        <Container width="100%" flex="column">
-          <label className={classes.label} htmlFor="title">
-            Gender:
-          </label>
-          <select
-            className={classes.input}
-            value={gender}
-            onChange={inputChangeHandler(setGender)}
-            required
-          >
-            <option>Select </option>
-            <option>Female </option>
-            <option>Male </option>
-          </select>
-        </Container>
         <Container width="100%" flex="column">
           <label className={classes.label} htmlFor="message">
-            Message:
+            Message <span style={{ color: "red" }}>*</span>
           </label>
           <textarea
             className={classes.input}
@@ -141,6 +90,10 @@ export default function ComplaintsForm() {
           </button>
         </Container>
       </form>
+
+      {successMessage && (
+        <Modal click={closeSuccessMessageHandler}>{successMessage}</Modal>
+      )}
     </Container>
   );
 }

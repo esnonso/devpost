@@ -13,7 +13,7 @@ import Backdrop from "../Backdrop";
 
 const links = [
   { caption: "Homepage", url: "/" },
-  { caption: "Chat with a doctor", url: "/chat/new" },
+  { caption: "Chat with a doctor", url: "/messages/new" },
   { caption: "Book appointment", url: "/appointments/new" },
   { caption: "Subscribe to health care", url: "/subscribe/new" },
   { caption: "Dashboard", url: "/admin/dashboard" },
@@ -55,14 +55,6 @@ export default function Header(props) {
               onMouseOver={showDropDownHandler}
               onMouseLeave={hideDropDownHandler}
             >
-              {status === "unauthenticated" && (
-                <Button
-                  text="Login"
-                  color={"black"}
-                  font="inherit"
-                  click={() => router.push("/login")}
-                />
-              )}
               {status === "authenticated" && (
                 <>
                   <Button
@@ -83,16 +75,16 @@ export default function Header(props) {
               {status === "unauthenticated" && (
                 <>
                   <Button
-                    text="Messages"
+                    text="Login"
                     color={"black"}
                     font="inherit"
-                    click={() => router.push("/chat")}
+                    click={() => router.push("/login")}
                   />
                   <Button
-                    text="Appointments"
+                    text="Register"
                     color={"black"}
                     font="inherit"
-                    click={() => router.push("/appointments")}
+                    click={() => router.push("/register")}
                   />
                 </>
               )}

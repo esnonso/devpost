@@ -9,48 +9,33 @@ import User from "@/Mongodb/Models/user";
 export default async function handler(req, res) {
   try {
     await connectDatabase();
-    let userId;
-    const session = await getServerSession(req, res, options);
-    if (session) {
-      const user = await User.findOne({ email: session.user.email });
-      userId = user._id;
-    }
-    const data = req.body;
-    if (!data.title || !data.message || !data.ageRange || !data.gender)
-      throwError("Fill all inputs", 422);
 
-    let openComplaint;
-    if (!session) {
-      openComplaint = await Message.findOne({
-        did: data.did,
-        status: { $in: ["With a Doctor", "Awaiting"] },
-      });
-    } else {
-      openComplaint = await Message.findOne({
-        user: userId,
-        status: { $in: ["With a Doctor", "Awaiting"] },
-      });
-    }
+    const session = await getServerSession(req, res, options);
+    if (!session) throw new Error("User not authenticated");
+
+    const user = await User.findOne({ email: session.user.email });
+
+    const { complaint, message } = req.body;
+    if (!complaint || !message) throwError("Fill all inputs", 422);
+
+    const openComplaint = await Message.findOne({
+      user: user._Id,
+      status: { $in: ["Unattended", "With a Doctor"] },
+    });
 
     if (openComplaint) {
-      throwError("You have an open request", 403);
+      throw new Error("You have a pending complaint");
     }
 
     await new Message({
-      identifier: session ? "UserId" : "Web5",
-      title: data.title,
-      message: data.message,
-      ageRange: data.ageRange,
-      gender: data.gender,
-      did: data.did,
-      status: data.status,
-      user: userId,
+      complaint,
+      message,
+      user: user._id,
     }).save();
 
-    return res.status(200).json({
-      message:
-        "Message sent! A doctor will reply you within 2 minutes. Check your messages",
-    });
+    return res
+      .status(200)
+      .json("Message sent! A doctor will attend to your message soon.");
   } catch (error) {
     if (error.status) {
       return res.status(error.status).json(error.message);

@@ -2,41 +2,27 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
-    identifier: {
+    complaint: {
       type: String,
-      required: true,
-    },
-    title: {
-      type: String,
-      required: [true, "Title is required"],
-      min: [3, "Title is too short"],
+      required: [true, "Complaint is required"],
+      min: [5, "Complaint title is too short"],
     },
     message: {
       type: String,
-      required: true,
+      required: [true, "Complaint message is required"],
       min: [20, "Message is too short"],
     },
 
-    gender: {
-      type: String,
-      required: [true, "Gender is required"],
-    },
-    ageRange: {
-      type: String,
-      required: [true, "Age is required"],
-    },
-    status: String,
+    status: { type: String, default: "Unattended" },
 
     attendedBy: mongoose.Schema.Types.ObjectId,
 
     prescription: mongoose.Schema.Types.ObjectId,
 
-    did: String,
-
-    doctorDid: String,
-
     user: mongoose.Schema.Types.ObjectId,
     replies: [],
+    notes: String,
+    conclusion: String,
   },
   { timestamps: true }
 );

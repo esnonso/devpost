@@ -17,18 +17,8 @@ export default function Appointments() {
   const getAppointments = async () => {
     try {
       setIsLoading(true);
-      let response;
-      if (status === "unauthenticated" && typeof window !== "undefined") {
-        const did = localStorage.getItem("did");
-        if (did !== null) {
-          response = await axios.post("/api/getUserAppointments", {
-            did: did,
-          });
-        }
-      }
-      if (status === "authenticated") {
-        response = await axios.post("/api/getUserAppointments");
-      }
+      const response = await axios.post("/api/getUserAppointments");
+
       if (response) setAppointments(response.data);
     } catch (error) {
       console.log(error);

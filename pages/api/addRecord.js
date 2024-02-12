@@ -9,14 +9,14 @@ export default async function handler(req, res) {
   try {
     await connectDatabase();
     let data;
-    const { messageId, status } = req.body;
+    const { conclusion, notes, messageId } = req.body;
     const session = await getServerSession(req, res, options);
     if (!session) throwError("User not authenticated", 403);
     const foundUser = await User.findOne({ email: session.user.email });
     if (foundUser.role !== "Doctor") throwError("An error occured", 500);
     const foundMessage = await message.findById(messageId);
-    foundMessage.status = status;
-    foundMessage.attendedBy = foundUser._id;
+    foundMessage.notes = notes;
+    foundMessage.conclusion = conclusion;
     data = await foundMessage.save();
     return res.status(201).json(data);
   } catch (error) {

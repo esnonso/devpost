@@ -7,6 +7,7 @@ import axios from "axios";
 export default function AllPatientsComplaints(props) {
   const [messages, setMessages] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const fetchMessagesHandler = async () => {
     try {
@@ -14,7 +15,7 @@ export default function AllPatientsComplaints(props) {
       const response = await axios.get("/api/getDoctorMessages");
       setMessages(response.data);
     } catch (error) {
-      console.log(error);
+      setError("An error occured Loading this page");
     } finally {
       setIsLoading(false);
     }
@@ -31,7 +32,8 @@ export default function AllPatientsComplaints(props) {
         <meta name="description" content="Doctor" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <PatientsComplaints messages={messages} />
+
+      <PatientsComplaints messages={messages} error={error} />
       {isLoading && <Loader message="Loading messages" />}
     </Fragment>
   );

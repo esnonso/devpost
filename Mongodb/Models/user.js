@@ -17,7 +17,13 @@ const userSchema = new mongoose.Schema(
       required: [true, "Password is required"],
       min: [7, "Password must have up to 7 characters"],
     },
-    role: String,
+    gender: { type: String, required: [true, "What gender are you?"] },
+    dob: { type: String, required: true },
+    role: { type: String, default: "User" },
+    resetPassword: String,
+    confirmationCode: String,
+    confirmedEmail: { type: Boolean, default: false },
+    did: String,
   },
   { timestamps: true }
 );

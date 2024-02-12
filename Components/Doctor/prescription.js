@@ -21,6 +21,7 @@ export default function Prescription(props) {
   const [search, setSearch] = useState("");
   const [selectedPill, setSelectedPill] = useState("");
   const [showPillForm, setShowPillForm] = useState(false);
+  const [message, setMessage] = useState("");
 
   const getPills = async () => {
     try {
@@ -28,7 +29,6 @@ export default function Prescription(props) {
       const res = await axios.get("/api/getPills");
       setPills(res.data.pills);
     } catch (error) {
-      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -92,10 +92,9 @@ export default function Prescription(props) {
         pills: prescription,
         messageId: props.messageId,
       });
-      alert(response.data);
-      router.push("/profile");
+      setMessage("Prescription added for user");
+      setTimeout(() => router.push("/profile"), 3000);
     } catch (error) {
-      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -111,6 +110,17 @@ export default function Prescription(props) {
           </button>
         </div>
         <Container width="100%" flex="column">
+          {message && (
+            <Container
+              width="100%"
+              margin="0 auto"
+              padding="0.5rem"
+              color="#D4EDDA"
+              radius="5px"
+            >
+              <small>{message}</small>
+            </Container>
+          )}
           <Container width="100%" flex="column" padding="0.5rem">
             <PTags fontSize="20px" margin="0 0 1rem 0">
               Prescription

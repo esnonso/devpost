@@ -13,7 +13,9 @@
     padding: 0.2rem;
     width:100%;
     box-sizing: border-box;
+    height: 5rem;
 }
+
 
 .label{
     margin: 0.5rem 0;
@@ -27,6 +29,22 @@
     margin: 1rem 1rem 0 0;
     border: none;
     font: inherit;
+}
+
+.pres-container {
+    height: fit-content;
+    padding: 1rem;
+    left: 2.5%;
+    width: 95%;
+    border-radius: 10px;
+    background-color: white;
+    position: absolute;
+    overflow: auto;
+    top: 2.5%;
+    z-index: 4;
+    animation-name: examples;
+    animation-duration: 1s;
+    box-sizing: border-box;
 }
 
 @media screen and (min-width:700px) and (max-width:900px) {

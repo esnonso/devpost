@@ -19,7 +19,7 @@ const Button = ({
     border: border || "none",
     width: width,
     height: height,
-    borderRadius: borderRadius,
+    borderRadius: "5px",
     padding: padding,
     fontSize: font,
     margin: margin,

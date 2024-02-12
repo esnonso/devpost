@@ -8,10 +8,19 @@ export default function PatientsComplaints(props) {
 
   return (
     <Container margin="5rem 1rem" flex="column" minHeight="50vh">
+      {props.error && (
+        <small
+          style={{
+            color: "red",
+          }}
+        >
+          {props.error}
+        </small>
+      )}
       <PTags fontSize="20px" borderBottom="1px gray solid" padding="0.5rem">
         {router.pathname === "/doctors/all-complaints/pending"
-          ? "Accepted Requests"
-          : "All Message Requests"}
+          ? "Accepted Complaints"
+          : "Complaints"}
       </PTags>
       {props.messages && props.messages.length < 1 && (
         <small style={{ textAlign: "center" }}>No new complaints</small>
@@ -24,20 +33,19 @@ export default function PatientsComplaints(props) {
               width="100%"
               borderBottom="1px gray solid"
               align="center"
+              justify="space-between"
             >
-              <PTags width="40%" margin="0.5rem">
-                {c.identifier === "UserId" && (
-                  <span style={{ color: "#139d69", fontSize: "25px" }}>★ </span>
-                )}
-                {c.title}
+              <PTags width="30%" margin="0.5rem">
+                <span style={{ color: "#139d69", fontSize: "25px" }}>★ </span>
+                {c.complaint}
               </PTags>
 
-              <PTags width="5%" margin="0.5rem" textAlign="center">
-                <b>{c.gender[0]}</b>
+              <PTags width="22%" margin="0.5rem" textAlign="center">
+                <b>{c.status}</b>
               </PTags>
 
-              <PTags width="40%" margin="0.5rem">
-                {c.ageRange.split("y")[0]}
+              <PTags width="22%" margin="0.5rem" textAlign="center">
+                {new Date(c.createdAt).toUTCString()}
               </PTags>
 
               <Button

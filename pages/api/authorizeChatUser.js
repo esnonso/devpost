@@ -5,7 +5,7 @@ import { options } from "./auth/[...nextauth]";
 import { throwError } from "@/Components/Error/errorFunction";
 import User from "@/Mongodb/Models/user";
 
-export default async function AuthorizeChat(req, res) {
+export default async function handler(req, res) {
   try {
     const { chatId } = req.body;
 
@@ -15,17 +15,19 @@ export default async function AuthorizeChat(req, res) {
 
     const user = await User.findOne({ email: session.user.email });
 
-    const complaint = await Message.findById(chatId).populate({
-      path: "attendedBy",
-      select: ["name", "role"],
-      model: User,
-    });
+    const complaint = await Message.findById(chatId)
+      .populate({
+        path: "attendedBy",
+        select: ["name", "role"],
+        model: User,
+      })
+      .populate({ path: "user", select: "name", model: User });
 
-    if (user.role !== "Doctor") {
+    if (complaint.user._id.toString() !== user._id.toString()) {
       throwError("Unauthorized Access", 403);
     }
 
-    return res.status(200).json({ complaint: complaint, role: user.role });
+    return res.status(200).json(complaint);
   } catch (error) {
     if (error.status) {
       return res.status(error.status).json(error.message);

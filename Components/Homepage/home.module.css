@@ -32,6 +32,7 @@
     background-blend-mode: multiply;
     box-sizing: border-box;
     padding: 0 0.2rem;
+    border-radius: 10px;
 }
 
 .call-a-doc-img{

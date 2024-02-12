@@ -27,7 +27,7 @@ export default function Homepage() {
             margin={"0.9rem 0.3rem"}
             back="#139D69"
             color="white"
-            click={() => router.push("/chat/new")}
+            click={() => router.push("/messages/new")}
           />
         </Container>
       </div>
@@ -63,7 +63,7 @@ export default function Homepage() {
               padding={"0 2rem"}
               color="white"
               border={"none"}
-              click={() => router.push("/chat/new")}
+              click={() => router.push("/messages/new")}
             />
           </Container>
         </div>

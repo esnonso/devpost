@@ -1,14 +1,11 @@
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Container from "../Containers/container";
-import Button from "../Button";
 import axios from "axios";
 import classes from "./index.module.css";
 import Image from "next/image";
 import Pic from "../Images/default-profile.png";
-import ContainerFlexColumn from "../Containers/container-flex-column";
 import { PTags } from "../Text";
 
 export default function UserProfile(props) {
@@ -39,7 +36,7 @@ export default function UserProfile(props) {
       <Container width="100%" wrap="wrap">
         {user.role === "Administrator" && (
           <Link href={"/admin/dashboard"} className={classes["action"]}>
-            Administarator Dashboard
+            Administrator Dashboard
           </Link>
         )}
         {user.role === "Doctor" && (
@@ -48,13 +45,13 @@ export default function UserProfile(props) {
               href={"/doctors/all-complaints"}
               className={classes["action"]}
             >
-              All Complaints
+              Complaints
             </Link>
             <Link
               href={"/doctors/all-complaints/pending"}
               className={classes["actions"]}
             >
-              Pending complaints
+              Patients
             </Link>
           </>
         )}
@@ -78,23 +75,20 @@ export default function UserProfile(props) {
         )}
         {user.role === "User" && (
           <>
-            <Link href={"chat/new"} className={classes["action"]}>
-              +New Message
+            <Link href={"messages/new"} className={classes["action"]}>
+              +New Complaint
             </Link>
-            <Link href={"/chat"} className={classes["actions"]}>
-              My Messages
+            <Link href={"/messages"} className={classes["actions"]}>
+              Complaints
             </Link>
             <Link href={"/appointments/new"} className={classes["action"]}>
               +New Appointments
             </Link>
             <Link href={"/appointments"} className={classes["actions"]}>
-              My Appointments
+              Appointments
             </Link>
           </>
         )}
-        <Link href="/" onClick={() => signOut()} className={classes["logout"]}>
-          Logout
-        </Link>
       </Container>
 
       <Container margin="3rem 0 0 0">
@@ -103,8 +97,11 @@ export default function UserProfile(props) {
           <PTags>Name: {user.name}</PTags>
           <PTags>Email: {user.email}</PTags>
           <PTags>Joined: {user.createdAt}</PTags>
-          {user.role === "Administrator" ||
-            (user.role === "Doctor" && <PTags>Status: {user.role}</PTags>)}
+          {user.role === "Administrator" || user.role === "Doctor" ? (
+            <PTags>Role: {user.role}</PTags>
+          ) : (
+            ""
+          )}
         </Container>
       </Container>
     </Container>

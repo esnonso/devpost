@@ -15,6 +15,8 @@ export default function AddStaff(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [dob, setDob] = useState("");
+  const [gender, setGender] = useState("");
 
   const inputChangeHandler = (setState) => (e) => {
     setState(e.target.value);
@@ -28,7 +30,7 @@ export default function AddStaff(props) {
 
     try {
       await axios.post("/api/addStaff", {
-        data: { firstname, lastname, email, role, password },
+        data: { firstname, lastname, email, role, password, dob, gender },
       });
       setMessage("Staff Added!");
       setLastname("");
@@ -36,6 +38,7 @@ export default function AddStaff(props) {
       setEmail("");
       setPassword("");
       setRole("");
+      setDob("");
     } catch (error) {
       if (error.response) setError(error.response.data);
       else setError("An error occured!");
@@ -115,6 +118,35 @@ export default function AddStaff(props) {
           />
         </Container>
 
+        <Container width="100%" flex="column">
+          <label className={classes.label} htmlFor="Date of Birth">
+            Date of Birth <span className={classes.required}>*</span>
+          </label>
+          <input
+            type="date"
+            name="date of birth"
+            className={classes.input}
+            value={dob}
+            onChange={inputChangeHandler(setDob)}
+          />
+        </Container>
+
+        <Container width="100%" flex="column">
+          <label className={classes.label} htmlFor="Gender">
+            Gender: <span className={classes.required}>*</span>
+          </label>
+          <select
+            className={classes.input}
+            value={gender}
+            name="gender"
+            onChange={inputChangeHandler(setGender)}
+          >
+            <option></option>
+            <option>Female </option>
+            <option>Male </option>
+          </select>
+        </Container>
+
         <Container flex="column" width="100%">
           <label>Role</label>
           <select
@@ -125,7 +157,6 @@ export default function AddStaff(props) {
             <option>--Select--</option>
             <option>Administrator</option>
             <option>Doctor</option>
-            <option>User</option>
             <option>Lab Guy</option>
           </select>
         </Container>

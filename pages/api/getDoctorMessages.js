@@ -13,7 +13,11 @@ export default async function GetMessages(req, res) {
     const user = await User.findOne({ email: session.user.email });
     if (user.role !== "Doctor") throw new Error("An error occured");
 
-    const data = await Message.find({ status: "Awaiting" });
+    const data = await Message.find({ status: "Unattended" }).populate({
+      path: "user",
+      select: "gender",
+      model: User,
+    });
     return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json("An error occured");
