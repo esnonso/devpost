@@ -4,7 +4,7 @@
     left: 2.5%;
     width: 95%;
     background-color: white;
-    position: absolute;
+    position: fixed;
     overflow: auto;
     top: 2.5%;
     z-index: 4;
