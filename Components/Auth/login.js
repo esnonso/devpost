@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import classes from "./login.module.css";
 import Container from "../Containers/container";
-import Footer from "../Footer";
 import { PTags } from "../Text";
 
 const LoginComponent = (props) => {
@@ -86,7 +85,6 @@ const LoginComponent = (props) => {
           </div>
         </form>
       </Container>
-      <Footer />
     </Container>
   );
 };
