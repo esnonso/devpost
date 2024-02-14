@@ -35,7 +35,7 @@ export default function Header(props) {
       <div className={classes.header}>
         <Container align="center">
           <Link href="/" className={classes.logo}>
-            DEVPOS
+            HOSPITAL
           </Link>
 
           <Image src={Logo} alt="logo-cross" width={35} height={35} />
@@ -104,7 +104,7 @@ export default function Header(props) {
           <div className={classes.sidebar}>
             <Container align="center" width="100%">
               <Container width="80%">
-                <h3 style={{ margin: 0 }}>DEVPOS</h3>
+                <h3 style={{ margin: 0 }}>HOSPITAL</h3>
                 <Image src={Logo} alt="logo-cross" width={25} height={25} />
               </Container>
               <Container width="20%" justify="flex-end">

@@ -9,7 +9,7 @@ export default function AllAppointmentRequests(props) {
   return (
     <Fragment>
       <Head>
-        <title>Devpost web5 Book Appointment</title>
+        <title>Doctor Appointment</title>
         <meta name="description" content="Doctor" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>

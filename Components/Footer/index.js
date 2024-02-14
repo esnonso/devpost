@@ -34,7 +34,7 @@ const Footer = () => {
 
         <div className={classes["devpost"]}>
           <PTags textAlign="left" margin="0 0 1rem 0" fontWeight="600">
-            Devpost
+            Hospital
           </PTags>
           <PTags textAlign="left" margin="0 0 0.3rem 0">
             <Link href="/messages/new" className={classes["link"]}>
@@ -77,7 +77,7 @@ const Footer = () => {
         <Image src={Insta} alt="" width={20} height={20} />
       </div>
       <Container margin="0.2rem 0 1rem 0" justify="center">
-        <small>ESNONSO Devpost all rights reserved. 2023</small>
+        <small>ESNONSO all rights reserved. 2023</small>
       </Container>
     </Container>
   );
