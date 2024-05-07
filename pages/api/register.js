@@ -9,7 +9,8 @@ export default async function handler(req, res) {
     if (!name || !email || !password || !dob || !gender)
       throw new Error("Fill all inputs");
     const userExists = await User.findOne({ email: email });
-    if (userExists) throw new Error("This email is already taken");
+    if (userExists)
+      throw new Error("This email is already taken by another user");
     const hashedPassword = await bcrypt.hash(password, 10);
     await new User({
       name,
