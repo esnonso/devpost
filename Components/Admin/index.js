@@ -27,12 +27,24 @@ export default function AdministaratorDashboard(props) {
 
   const confirmAdminHandler = async () => {
     try {
-      if (status === "unauthenticated") router.replace("/login");
+      setIsLoading(true);
+      if (status === "unauthenticated") {
+        const error = new Error("User not authenicated");
+        error.status = 403;
+        throw error;
+      }
       const response = await axios.post("/api/getUser");
-      if (response.data.user.role !== "Administrator")
-        router.replace("/profile");
+      if (response.data.user.role !== "Administrator") {
+        const error = new Error("User not administrator");
+        error.status = 404;
+        throw error;
+      }
     } catch (error) {
-      alert(error);
+      alert(error.message);
+      if (error.status === 403) router.replace("/login");
+      if (error.status === 404) router.replace("/profile");
+    } finally {
+      setIsLoading(false);
     }
   };
 

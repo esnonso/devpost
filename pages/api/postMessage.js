@@ -11,7 +11,11 @@ export default async function handler(req, res) {
     await connectDatabase();
 
     const session = await getServerSession(req, res, options);
-    if (!session) throw new Error("User not authenticated");
+    if (!session) {
+      const error = new Error("You need to login to continue");
+      error.status = 404;
+      throw error;
+    }
 
     const user = await User.findOne({ email: session.user.email });
 

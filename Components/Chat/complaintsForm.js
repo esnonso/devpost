@@ -56,7 +56,7 @@ export default function ComplaintsForm() {
               color="#F8D7DA"
               radius="5px"
             >
-              <small>Error 403: {error}</small>
+              <small> {error}</small>
             </Container>
           )}
           <label className={classes.label} htmlFor="title">

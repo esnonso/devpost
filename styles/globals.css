@@ -39,3 +39,7 @@ button:disabled {
 button{
     border-radius: 5px;
 }
+
+input {
+    padding: 0.3rem 0 0.3rem 0;
+}
