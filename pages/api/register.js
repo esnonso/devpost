@@ -20,9 +20,7 @@ export default async function handler(req, res) {
       dob,
       did,
     }).save();
-    return res
-      .status(200)
-      .json("User creation success! A verification email has been sent");
+    return res.status(200).json("User creation success! Proceed to login");
   } catch (error) {
     return res.status(500).json(error.message);
   }

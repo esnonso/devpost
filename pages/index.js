@@ -6,7 +6,7 @@ export default function Home(props) {
   return (
     <Fragment>
       <Head>
-        <title>Home</title>
+        <title>Hospital</title>
         <meta
           name="description"
           content="Hospital solution Get health serveices, speak to a doctor, subscribe to healthcare"

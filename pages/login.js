@@ -6,7 +6,7 @@ export default function Login() {
   return (
     <Fragment>
       <Head>
-        <title>Login</title>
+        <title>Hospital</title>
         <meta name="description" content="Login page" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
